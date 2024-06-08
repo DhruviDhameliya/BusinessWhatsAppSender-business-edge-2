@@ -81,7 +81,7 @@ Partial Class FrmAbout
         Me.LinkLabel1.Font = New System.Drawing.Font("Arial", 9.75!)
         Me.LinkLabel1.Location = New System.Drawing.Point(167, 201)
         Me.LinkLabel1.Name = "LinkLabel1"
-        Me.LinkLabel1.Size = New System.Drawing.Size(154, 16)
+        Me.LinkLabel1.Size = New System.Drawing.Size(153, 16)
         Me.LinkLabel1.TabIndex = 9
         Me.LinkLabel1.TabStop = True
         Me.LinkLabel1.Text = "www.truelinesolution.com"

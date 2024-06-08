@@ -562,20 +562,7 @@ Module WhatsappBulkSenderModule
     Public Function SafeJavaScript(ByVal str As String) As String
         Return HttpUtility.JavaScriptStringEncode(str)
     End Function
-    Public Function ChackOrderNumberExist() As Boolean
-        Try
-            Dim license As String = GetSetting(Application.ProductName, "license", "key", "")
-            If (license <> "") Then
-                Return True
-            Else
-                Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
-                Dim orderExist As String = getServerData(ServerURL + "isorderexist/" + ordernumber, False)
-                Return CBool(orderExist)
-            End If
-        Catch ex As Exception
-            Return False
-        End Try
-    End Function
+
     Public Function getMac() As String
         Try
             Dim DriveSerial As Integer
@@ -621,6 +608,17 @@ Module WhatsappBulkSenderModule
             Return JsonConvert.DeserializeObject(Json)
         Catch ex As Exception
             Return "Data Parsing Error"
+        End Try
+    End Function
+
+    Public Function ChackOrderNumberExist() As Boolean
+        Try
+            Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+            Dim orderExist As String = getServerData(ServerURL + "isorderexist/" + ordernumber, False)
+            Console.WriteLine("orderExist " & orderExist)
+            Return CBool(orderExist)
+        Catch ex As Exception
+            Return False
         End Try
     End Function
 
