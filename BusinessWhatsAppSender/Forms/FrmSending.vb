@@ -214,6 +214,7 @@ Public Class FrmSending
         Next
         BulkIsLoggedIn = True
         For Each _wa In chnl
+            _wa.MediaFiles = BulkAttachments
             _wa.Send()
             Application.DoEvents()
         Next

@@ -334,6 +334,8 @@ Public Class FrmBrowser
                     Thread.Sleep(100)
                     status = Await WebView2.ExecuteScriptAsync("tlsbot.numberStatus['" & WhatsAppAccount & "']")
                 Loop While status.ToString() = """null"""
+                Console.WriteLine("checkNumberStatus")
+                Console.WriteLine(status.ToString())
                 checkNumberStatus(status.ToString())
             Catch ex As Exception
                 Console.WriteLine(ex)
@@ -423,7 +425,6 @@ Public Class FrmBrowser
     Public ReceivingCounter As Integer
     Public Async Function GetAllUnreadChats() As Task(Of Object)
         Try
-            Console.WriteLine("tlsbot.getUnreadChat().then(e=>tlsbot.UnreadChatList=e)")
             Dim ContactResults = """null"""
             Await WebView2.ExecuteScriptAsync("tlsbot.UnreadChatList='null'")
             Await WebView2.ExecuteScriptAsync("tlsbot.getUnreadChat().then(e=>tlsbot.UnreadChatList=e)")
@@ -446,7 +447,6 @@ Public Class FrmBrowser
     End Function
     Public Async Function GetUnreadChatById(id) As Task(Of Object)
         Try
-            Console.WriteLine("tlsbot.getUnreadChatbyId('" & id & "').then(e=>tlsbot.UnreadChat=e)")
             Dim ContactResults = """null"""
             Await WebView2.ExecuteScriptAsync("tlsbot.UnreadChat='null'")
             Await WebView2.ExecuteScriptAsync("tlsbot.getUnreadChatbyId('" & id & "').then(e=>tlsbot.UnreadChat=e)")
@@ -493,30 +493,22 @@ Public Class FrmBrowser
 
             Dim WhatsAppAccount As String = ""
             Dim Body As String = ""
-            Console.WriteLine("1")
             Try
                 Dim li As ListViewItem
                 Dim li2 As ListViewItem
                 Dim a = Await GetAllUnreadChats()
-                Console.WriteLine(a)
                 Dim t As Object
                 If a.Count > 0 Then
                     For Each t In a
                         Application.DoEvents()
-                        Console.WriteLine(t)
                         If Not IsReceivedKeyExsist(t("_serialized")) Then
-                            Console.WriteLine("1")
                             Try
                                 If FrmMain.ButtonSwitch.Dock = DockStyle.Right Then
-                                    Console.WriteLine("2")
                                     Dim b = Await GetUnreadChatById(t("_serialized"))
-                                    Console.WriteLine(b)
                                     If Not b.Equals(JsonConvert.DeserializeObject("{}")) Then
                                         AddMessageKey(t("_serialized"))
-                                        Console.WriteLine("3")
                                         If b("server") = "c.us" Then
                                             If b("type") = "in" Then
-                                                Console.WriteLine("4")
                                                 allReceivedMessage = allReceivedMessage & Newtonsoft.Json.JsonConvert.SerializeObject(b) & vbNewLine & vbNewLine
                                                 li = New ListViewItem
                                                 li2 = New ListViewItem
@@ -537,7 +529,6 @@ Public Class FrmBrowser
                                                     Body = b("body").ToString
                                                 End If
                                                 WhatsAppAccount = b("_serialized").ToString
-                                                Console.WriteLine("5")
                                                 Dim _autoReplyObject As ClsAutoReplyMessage
                                                 If IO.File.Exists(ClsSpecialDirectories.Getdata & "autoreply.json") Then
                                                     _autoReplyObject = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ClsAutoReplyMessage)(IO.File.ReadAllText(ClsSpecialDirectories.Getdata & "autoreply.json"))
