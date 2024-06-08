@@ -7,7 +7,7 @@ Module ModuleConfig
     Public SupportPhone As String = "919913299862"
     Public SupportEmail As String = "contact@truelinesolution.com"
     'Public ServerURL As String = "http://bulkwhatsappmarketing.in/BusinessGetDateEX.ashx" 'you can host getlic on your server 
-    Public ServerURL As String = "http://192.168.1.46:8085/"
+    Public ServerURL As String = "http://api.bulkwhatsappmarketing.in/"
     Public appversion As String = 3 ' 3 for business
 
     Public LicenseMode As Boolean = True
@@ -18,7 +18,7 @@ Module ModuleConfig
     Public ApplicationTitle As String = "WHATSAPP BUSINESS MARKETING SOFTWARE"
     Public ApplicationVersion As String = "9.0 | Trueline Solution"
     Public Appv As String = "9.0"
-    Public Builddate As String = "25-05-2024"
+    Public Builddate As String = "07-06-2024"
     Public version As String = "2.2"
 
     Public ShowAbout As Boolean = True
