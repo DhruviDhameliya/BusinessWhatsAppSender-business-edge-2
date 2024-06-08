@@ -2,23 +2,6 @@
 Imports System.Web
 
 Public Class ClsLicence
-    Public Shared Function ValidateLicense(ByVal ActivationCode As String) As ActivationCodeResponse
-        Try
-            Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
-            Dim request As String = New System.Net.WebClient().DownloadString("http://bulkwhatsappmarketing.in/getrequestbyorder.php?ordernumber=" + ordernumber)
-            request = request.Split(",")(3).Split(":")(1).Replace("""", "").Replace("}", "")
-            Dim jsonResult As String = New System.Net.WebClient().DownloadString("http://bulkwhatsappmarketing.in/newvalidate.php?id=3&license=" + HttpUtility.UrlEncode(ActivationCode) + "&request=" + HttpUtility.UrlEncode(request) + "&ordernumber=" + ordernumber)
-            Dim response As ActivationCodeResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ActivationCodeResponse)(jsonResult)
-            Return response
-        Catch ex As Exception
-            Dim ErrorResponse As New ActivationCodeResponse
-            ErrorResponse.IsExsist = False
-            ErrorResponse.ErrorDescription = "Error unable to validate license"
-            ErrorResponse.Response = Nothing
-            Return ErrorResponse
-        End Try
-
-    End Function
 
     Private Shared Function GetServerDate() As Long
         Try
