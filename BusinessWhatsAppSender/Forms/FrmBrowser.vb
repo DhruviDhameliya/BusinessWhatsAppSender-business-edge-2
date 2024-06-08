@@ -530,6 +530,8 @@ Public Class FrmBrowser
                                                 End If
                                                 WhatsAppAccount = b("_serialized").ToString
                                                 Dim _autoReplyObject As ClsAutoReplyMessage
+                                                Console.WriteLine("_autoReplyObject::::::::::::")
+                                                Console.WriteLine(_autoReplyObject)
                                                 If IO.File.Exists(ClsSpecialDirectories.Getdata & "autoreply.json") Then
                                                     _autoReplyObject = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ClsAutoReplyMessage)(IO.File.ReadAllText(ClsSpecialDirectories.Getdata & "autoreply.json"))
                                                 Else
@@ -539,7 +541,9 @@ Public Class FrmBrowser
                                                     If Not IsAutoReplied(WhatsAppAccount) Then
                                                         If WhatsAppAccount.ToLower.Contains("@c.us") Then
                                                             AddAutoReplyAccount(WhatsAppAccount)
-                                                            Await SendMessage(WhatsAppAccount, _autoReplyObject.Message, False)
+                                                            If Not (_autoReplyObject.Message.Trim()) Then
+                                                                Await SendMessage(WhatsAppAccount, _autoReplyObject.Message, False)
+                                                            End If
                                                             Application.DoEvents()
                                                             If Not IsNothing(_autoReplyObject.Attachment) Then
                                                                 For Each attach As ClsAttachment In _autoReplyObject.Attachment
