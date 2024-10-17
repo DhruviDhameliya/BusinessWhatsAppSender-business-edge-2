@@ -30,6 +30,10 @@ Public Class ClsBase64
                 MimeType = "data:application/vnd.ms-excel;base64,"
             Case ".xls"
                 MimeType = "data:application/vnd.ms-excel;base64,"
+            Case ".doc"
+                MimeType = "data:application/msword;base64,"
+            Case ".docx"
+                MimeType = "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,"
 
         End Select
         Return MimeType & Convert.ToBase64String(System.IO.File.ReadAllBytes(fileName))

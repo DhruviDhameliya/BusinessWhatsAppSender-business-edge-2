@@ -944,7 +944,7 @@ Public Class FrmMain
 
     Private Sub DocumentsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DocumentsToolStripMenuItem.Click
         Dim OpenDlg As New OpenFileDialog()
-        OpenDlg.Filter = "*.txt;*.pdf;*.csv;*.xlsx;*.xls|*.txt;*.pdf;*.csv;*.xlsx;*.xls"
+        OpenDlg.Filter = "*.txt;*.pdf;*.csv;*.xlsx;*.xls|*.txt;*.pdf;*.csv;*.xlsx;*.xls;*.doc;*.docx"
 
         OpenDlg.Multiselect = True
         If OpenDlg.ShowDialog() = DialogResult.OK Then

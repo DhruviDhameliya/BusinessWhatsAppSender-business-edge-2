@@ -465,6 +465,7 @@ Module WhatsappBulkSenderModule
             Dim Json = getServerData(ServerURL + "insertorderdata/" + mobile + "/" + appversion + "/" + HttpUtility.UrlEncode(mac) + "/", False)
             Dim orderData = jsonParse(Json)
             If orderData("status") = "1" Then
+                SaveSetting(ApplicationTitle, "request", "MACID", mac)
                 Return orderData("data")
             Else
                 Return orderData("description")
@@ -576,12 +577,35 @@ Module WhatsappBulkSenderModule
                 End If
             End With
             Dim nics() As NetworkInterface = NetworkInterface.GetAllNetworkInterfaces()
-            Dim mac = nics(0).GetPhysicalAddress.ToString()
+            Dim registryMacId = GetSetting(ApplicationTitle, "request", "MACID", "")
+            Dim mac
+            If registryMacId IsNot "" Then
+                For Each nic As NetworkInterface In nics
+                    If registryMacId = nic.GetPhysicalAddress().ToString() Then
+                        mac = nic.GetPhysicalAddress().ToString()
+                    End If
+                Next
+            Else
+                If CheckOrderNumberExist() Then
+                    Dim getMacId = GetMacIdFromOrderId()
+                    Console.WriteLine("getMacId " & getMacId)
+                    For Each nic As NetworkInterface In nics
+                        If getMacId = nic.GetPhysicalAddress().ToString() Then
+                            mac = nic.GetPhysicalAddress().ToString()
+                        End If
+                    Next
+                Else
+                    mac = nics(0).GetPhysicalAddress().ToString()
+                End If
+
+            End If
             If (mac = "") Then
                 mac = DriveSerial.ToString("X2")
             End If
+            Console.WriteLine("mac : " & mac)
             Return mac
         Catch ex As Exception
+            Console.WriteLine(ex)
             Return "Invalid Mac"
         End Try
     End Function
@@ -589,14 +613,12 @@ Module WhatsappBulkSenderModule
     Public Function getServerData(url As String, Optional concate As Boolean = True) As String
         Try
             Dim webClient As New Net.WebClient
-            Console.WriteLine("url : " & url)
             Dim data = ""
             If concate Then
                 data = webClient.DownloadString(url & "&l=" & Now.ToString("yyyyMMddhhmmss"))
             Else
                 data = webClient.DownloadString(url & "?l=" & Now.ToString("yyyyMMddhhmmss"))
             End If
-            Console.WriteLine("response : " & data)
             Return data
         Catch ex As Exception
             MsgBox("Not able to connect with Server check your Internet Connection" & ex.Message)
@@ -607,18 +629,36 @@ Module WhatsappBulkSenderModule
         Try
             Return JsonConvert.DeserializeObject(Json)
         Catch ex As Exception
-            Return "Data Parsing Error"
+            Return JsonConvert.DeserializeObject("{status: 0,description:'Data Parsing Error'}")
         End Try
     End Function
 
-    Public Function ChackOrderNumberExist() As Boolean
+    Public Function CheckOrderNumberExist() As Boolean
         Try
             Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
-            Dim orderExist As String = getServerData(ServerURL + "isorderexist/" + ordernumber, False)
-            Console.WriteLine("orderExist " & orderExist)
-            Return CBool(orderExist)
+            If ordernumber IsNot "" Then
+                Dim orderExist As String = getServerData(ServerURL + "isorderexist/" + ordernumber, False)
+                Return CBool(orderExist)
+            Else
+                Return False
+            End If
         Catch ex As Exception
             Return False
+        End Try
+    End Function
+
+    Public Function GetMacIdFromOrderId() As String
+        Try
+            Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+            If ordernumber IsNot "" Then
+                Dim macId As String = getServerData(ServerURL + "getmacidbyorder/" + ordernumber, False)
+                SaveSetting(ApplicationTitle, "request", "MACID", macId)
+                Return macId
+            Else
+                Return ""
+            End If
+        Catch ex As Exception
+            Return ""
         End Try
     End Function
 
