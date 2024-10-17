@@ -351,9 +351,9 @@ Public Class FrmBrowser
     Public Async Function SendMessage(ByVal WhatsAppAccount As String, ByVal Message As String, ByVal IsSafe As Boolean) As Task(Of String)
         Try
             Dim status = """null"""
-            If Message = "" Then
-                Message = " "
-            End If
+            'If Message = "" Then
+            'Message = " "
+            'End If
             Message = SafeJavaScript(Message)
             Try
                 Await WebView2.ExecuteScriptAsync("tlsbot.sendMessageStatus='null'")

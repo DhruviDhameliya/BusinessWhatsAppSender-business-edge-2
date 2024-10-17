@@ -126,7 +126,6 @@ Public Class FrmMultiBrowser
             Dim SendingCounter As Integer = 1
             For Each Destination As DestinationModel In Contacts
                 BulkCurrentProgress = BulkCurrentProgress + 1
-
                 '' Select Message to send 
                 Randomize()
                 If Messages.Count > 0 Then
@@ -171,6 +170,7 @@ Public Class FrmMultiBrowser
                     Thread.Sleep(10)
                 Loop While BulkIsPaused
                 Thread.Sleep(300)
+                Thread.Sleep(GetDelay)
                 If CBool(GetSetting(ApplicationTitle, "SendingConfig", "ActivateSleep", "false")) Then
                     If SendingCounter Mod Val(GetSetting(ApplicationTitle, "SendingConfig", "SleepAfter", 20)) = 0 Then
                         BulkIsResting = True
@@ -190,12 +190,29 @@ Public Class FrmMultiBrowser
 
         End Try
     End Sub
+
+    Private Function GetDelay() As Integer
+        Dim Num1 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayStart", "0"))
+        Dim Num2 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayEnd", "2"))
+
+        Randomize()
+        Dim a As Integer = 10
+        If Num2 > 0 Then
+            a = (Num1 + (Int(Rnd() * Num2))) * 1000
+        Else
+            a = 100
+        End If
+        If a = 0 Then
+            a = 100
+        End If
+        Return a
+    End Function
     Public Async Function SendMessage(ByVal WhatsAppAccount As String, ByVal Message As String, ByVal IsSafe As Boolean) As Task(Of String)
         Try
             Dim status = """null"""
-            If Message = "" Then
-                Message = " "
-            End If
+            'If Message = "" Then
+            '    Message = " "
+            'End If
             Message = SafeJavaScript(Message)
             Try
                 WebView21.BeginInvoke(Async Sub()
