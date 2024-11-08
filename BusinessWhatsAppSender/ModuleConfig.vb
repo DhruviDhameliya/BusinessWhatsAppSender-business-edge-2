@@ -18,7 +18,7 @@ Module ModuleConfig
     Public ApplicationTitle As String = "WHATSAPP BUSINESS MARKETING SOFTWARE"
     Public ApplicationVersion As String = "9.0 | Trueline Solution"
     Public Appv As String = "9.0"
-    Public Builddate As String = "17-10-2024"
+    Public Builddate As String = "19-10-2024"
     Public version As String = "2.2"
 
     Public ShowAbout As Boolean = True

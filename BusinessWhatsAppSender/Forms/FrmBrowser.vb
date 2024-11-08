@@ -541,7 +541,8 @@ Public Class FrmBrowser
                                                     If Not IsAutoReplied(WhatsAppAccount) Then
                                                         If WhatsAppAccount.ToLower.Contains("@c.us") Then
                                                             AddAutoReplyAccount(WhatsAppAccount)
-                                                            If Not (_autoReplyObject.Message.Trim()) Then
+                                                            If Not _autoReplyObject.Message.Trim() = "" Then
+                                                                Console.WriteLine(")))))))))))))))))))))")
                                                                 Await SendMessage(WhatsAppAccount, _autoReplyObject.Message, False)
                                                             End If
                                                             Application.DoEvents()
