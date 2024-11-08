@@ -438,6 +438,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\FrmAbout.resx">
       <DependentUpon>FrmAbout.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmAdd.resx">
       <DependentUpon>FrmAdd.vb</DependentUpon>

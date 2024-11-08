@@ -126,7 +126,6 @@ Public Class FrmMultiBrowser
             Dim SendingCounter As Integer = 1
             For Each Destination As DestinationModel In Contacts
                 BulkCurrentProgress = BulkCurrentProgress + 1
-
                 '' Select Message to send 
                 Randomize()
                 If Messages.Count > 0 Then
@@ -195,6 +194,7 @@ Public Class FrmMultiBrowser
     Private Function GetDelay() As Integer
         Dim Num1 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayStart", "0"))
         Dim Num2 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayEnd", "2"))
+
         Randomize()
         Dim a As Integer = 10
         If Num2 > 0 Then
