@@ -779,6 +779,7 @@ Public Class FrmMain
         FrmBrowser.Show()
         FrmBrowser.Activate()
         FrmBrowser.WindowState = FormWindowState.Normal
+        'FrmBrowser.OpenWhatsapp()
     End Sub
     Private Async Sub ImportFromWhatsAppContactsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFromWhatsAppContactsToolStripMenuItem.Click, WhatsAppContactsToolStripMenuItem.Click
         If DemoMode Then : ShowDemoMessage() : End If
@@ -943,7 +944,7 @@ Public Class FrmMain
 
     Private Sub DocumentsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DocumentsToolStripMenuItem.Click
         Dim OpenDlg As New OpenFileDialog()
-        OpenDlg.Filter = "*.txt;*.pdf;*.csv;*.xlsx;*.xls|*.txt;*.pdf;*.csv;*.xlsx;*.xls"
+        OpenDlg.Filter = "*.txt;*.pdf;*.csv;*.xlsx;*.xls|*.txt;*.pdf;*.csv;*.xlsx;*.xls;*.doc;*.docx"
 
         OpenDlg.Multiselect = True
         If OpenDlg.ShowDialog() = DialogResult.OK Then
@@ -1321,6 +1322,9 @@ Public Class FrmMain
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         If API.GMBEnable.Equals("TRUE") Then
+            If LicenseMode Then
+                CheckLicense()
+            End If
             GMB.Show()
         Else
             Process.Start(WebsiteURL)

@@ -106,7 +106,7 @@ Public Class FrmMultiBrowser
                 Application.DoEvents()
             Loop Until _isLoggedIn > 0
             Await WebView21.ExecuteScriptAsync(WAPIScript)
-            Dim _WAPILoginResult = CBool(Await WebView21.ExecuteScriptAsync("WAPI.isLoggedIn();"))
+            Dim _WAPILoginResult = CBool(Await WebView21.ExecuteScriptAsync("tlsbot.isLogginDone();"))
             connected = _WAPILoginResult
         Catch ex As Exception
             Console.WriteLine(ex)
@@ -121,7 +121,6 @@ Public Class FrmMultiBrowser
         While Not connected
             Thread.Sleep(100)
         End While
-        Console.WriteLine("connected" & connected.ToString())
         Try
             Dim MessageToSend As String = ""
             Dim SendingCounter As Integer = 1
@@ -141,6 +140,7 @@ Public Class FrmMultiBrowser
                                                Destination.FirstName, Destination.LastName,
                                                Destination.Var1, Destination.Var2, Destination.Var3,
                                                Destination.Var4, Destination.Var5)
+                Thread.Sleep(1000)
                 SendingResult = Await SendMessage(Destination.WhatsAppID, MessageToSend, False)
                 Dim SentMessage As New MessageSentModel
                 SentMessage.MessageID = ThreadNo & SendingCounter
@@ -171,6 +171,7 @@ Public Class FrmMultiBrowser
                     Thread.Sleep(10)
                 Loop While BulkIsPaused
                 Thread.Sleep(300)
+                Thread.Sleep(GetDelay)
                 If CBool(GetSetting(ApplicationTitle, "SendingConfig", "ActivateSleep", "false")) Then
                     If SendingCounter Mod Val(GetSetting(ApplicationTitle, "SendingConfig", "SleepAfter", 20)) = 0 Then
                         BulkIsResting = True
@@ -190,31 +191,49 @@ Public Class FrmMultiBrowser
 
         End Try
     End Sub
+
+    Private Function GetDelay() As Integer
+        Dim Num1 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayStart", "0"))
+        Dim Num2 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayEnd", "2"))
+        Randomize()
+        Dim a As Integer = 10
+        If Num2 > 0 Then
+            a = (Num1 + (Int(Rnd() * Num2))) * 1000
+        Else
+            a = 100
+        End If
+        If a = 0 Then
+            a = 100
+        End If
+        Return a
+    End Function
     Public Async Function SendMessage(ByVal WhatsAppAccount As String, ByVal Message As String, ByVal IsSafe As Boolean) As Task(Of String)
         Try
             Dim status = """null"""
-            If Message = "" Then
-                Message = " "
-            End If
+            'If Message = "" Then
+            '    Message = " "
+            'End If
             Message = SafeJavaScript(Message)
             Try
-                WebView21.BeginInvoke(Sub()
-                                          WebView21.ExecuteScriptAsync("tlsbot.status='null'")
+                WebView21.BeginInvoke(Async Sub()
+                                          Await WebView21.ExecuteScriptAsync("tlsbot.sendMessageStatus='null'")
                                       End Sub)
-                WebView21.BeginInvoke(Sub()
-                                          WebView21.ExecuteScriptAsync($"tlsbot.sendMessage('{WhatsAppAccount}','{Message}',{IsSafe.ToString.ToLower}).then(e=>tlsbot.status=e)")
+                WebView21.BeginInvoke(Async Sub()
+                                          Await WebView21.ExecuteScriptAsync($"tlsbot.sendMessage('{WhatsAppAccount}','{Message}',{IsSafe.ToString.ToLower}).then(e=>tlsbot.sendMessageStatus=e)")
                                       End Sub)
+                Thread.Sleep(1000)
                 Do
                     Thread.Sleep(100)
                     WebView21.BeginInvoke(Async Sub()
-                                              status = Await WebView21.ExecuteScriptAsync("tlsbot.status")
+                                              status = Await WebView21.ExecuteScriptAsync("tlsbot.sendMessageStatus")
                                           End Sub)
                 Loop While status.ToString() = """null"""
+                Thread.Sleep(1000)
+                Dim ReceivedStatus = JsonConvert.DeserializeObject(status.ToString())
+                Return ReceivedStatus("sentStatus")
             Catch ex As Exception
                 Console.WriteLine(ex)
             End Try
-            Dim ReceivedStatus = JsonConvert.DeserializeObject(status.ToString())
-            Return ReceivedStatus("sentStatus")
         Catch ex As Exception
             Return False
         End Try

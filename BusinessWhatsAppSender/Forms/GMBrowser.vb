@@ -39,7 +39,9 @@ Public Class GMBrowser
                 Application.DoEvents()
             Loop Until _isLoggedIn > 0
             Await WebView22.ExecuteScriptAsync(API.GMBScroll)
+            System.Threading.Thread.Sleep(2000)
             WebView22.ExecuteScriptAsync(API.GMBScript)
+            System.Threading.Thread.Sleep(2000)
         Catch ex As Exception
             Console.WriteLine(ex)
         End Try
