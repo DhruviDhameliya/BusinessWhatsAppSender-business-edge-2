@@ -4,6 +4,7 @@ Imports System.Net.NetworkInformation
 Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Web
+Imports Newtonsoft.Json
 
 Module WhatsappBulkSenderModule
     Public ProfileName As String
@@ -335,7 +336,7 @@ Module WhatsappBulkSenderModule
             System.Net.ServicePointManager.Expect100Continue = True
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or SecurityProtocolType.Tls11 Or SecurityProtocolType.Tls12 Or SecurityProtocolType.Ssl3 Or CType(3072, SecurityProtocolType)
             Dim wc As New WebClient
-            Return ServerDecrypt(wc.DownloadString(ServerURL))
+            Return Now.ToString("yyyyMMdd")
         Catch ex As Exception
             Return Now
         End Try
@@ -344,89 +345,25 @@ Module WhatsappBulkSenderModule
         Public valid As Boolean
         Public Validtill As String
     End Structure
-    Public Function CheckCurrentLicence() As appLicense
-        Dim _applic As New appLicense
-        Dim _lic As String = GetSetting(ApplicationTitle, "license", "key", "")
+    Public Function CheckCurrentLicence(ByVal License As String) As Object
         Try
-            System.Net.ServicePointManager.Expect100Continue = True
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or SecurityProtocolType.Tls11 Or SecurityProtocolType.Tls12 Or SecurityProtocolType.Ssl3 Or CType(3072, SecurityProtocolType)
-            Dim json As String = New System.Net.WebClient().DownloadString("http://bulkwhatsappmarketing.in/businessvalidate.php?license=" + HttpUtility.UrlEncode(_lic))
-            If json = 0 Then
-                Dim _t As New appLicense
-                _t.valid = False
-                _t.Validtill = "Expired"
-                Return _t
+            Dim mac = getMac()
+            If (License <> "") Then
+                Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+                Dim licenseJson As String = getServerData(ServerURL + "isvalidlicense/" + ordernumber + "/" + License + "/" + appversion + "/" + mac, False)
+                Dim licenseData = jsonParse(licenseJson)
+                Return licenseData
+            Else
+                Dim licenseData As New Dictionary(Of String, String)
+                licenseData("status") = "0"
+                licenseData("description") = ""
+                Return licenseData
             End If
-            _lic = Decrypt(Decrypt(_lic))
         Catch ex As Exception
-            _lic = ""
+            Dim licenseData As New Dictionary(Of String, String)
+            licenseData("status") = "0"
+            licenseData("description") = ex.Message
         End Try
-        Dim IsValid As Boolean = False
-        Dim IsValidTill As String = "Expired"
-        Try
-            If _lic <> "" Then
-                Dim a() As String = Split(_lic, "||||")
-                Dim LicMacAddress As String = a(0)
-                Dim LicDate As Long = a(1)
-                Dim ExpDate As String = a(2)
-
-
-            End If
-            _applic.valid = IsValid
-            _applic.Validtill = IsValidTill
-            Return _applic
-        Catch ex As Exception
-            Dim _t As New appLicense
-            _t.valid = False
-            _t.Validtill = "Expired"
-            Return _t
-        End Try
-    End Function
-
-    Public Function CheckCurrentLicence(ByVal License As String) As appLicense
-        Dim _applic As New appLicense
-        Dim _lic As String = License
-        Try
-            System.Net.ServicePointManager.Expect100Continue = True
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or SecurityProtocolType.Tls11 Or SecurityProtocolType.Tls12 Or SecurityProtocolType.Ssl3 Or CType(3072, SecurityProtocolType)
-            Dim json As String = New System.Net.WebClient().DownloadString("http://bulkwhatsappmarketing.in/businessvalidate.php?license=" + HttpUtility.UrlEncode(_lic))
-            If json = 0 Then
-                Dim _t As New appLicense
-                _t.valid = False
-                _t.Validtill = "Expired"
-                Return _t
-            End If
-            _lic = Decrypt(Decrypt(_lic))
-        Catch ex As Exception
-            _lic = ""
-        End Try
-        Dim IsValid As Boolean = False
-        Dim IsValidTill As String = "Expired"
-        Try
-            If _lic <> "" Then
-                Dim a() As String = Split(_lic, "||||")
-                Dim LicMacAddress As String = a(0)
-                Dim LicDate As String = a(1)
-                Dim ExpDate As String = a(2)
-                ' If GetDriveSerialNumber() = LicMacAddress Then
-                'If LicDate > GetDate() Then
-                'IsValid = True
-                'IsValidTill = ExpDate
-                'End If
-                'End If
-            End If
-            _applic.valid = IsValid
-            _applic.Validtill = IsValidTill
-            Return _applic
-        Catch ex As Exception
-            Dim _t As New appLicense
-            _t.valid = False
-            _t.Validtill = "Expired"
-            Return _t
-        End Try
-
-
-
     End Function
     Public Sub SaveAccounts(ByVal lst As ListView)
         Try
@@ -524,34 +461,18 @@ Module WhatsappBulkSenderModule
 
     Public Function GetDriveSerialNumber(mobile As String) As String
         Try
-            Dim DriveSerial As Integer
-            Dim fso As Object = CreateObject("Scripting.FileSystemObject")
-            Dim Drv As Object = fso.GetDrive(fso.GetDriveName(Application.StartupPath))
-            With Drv
-                If .IsReady Then
-                    DriveSerial = .SerialNumber
-                Else    '"Drive Not Ready!"
-                    DriveSerial = -1
-                End If
-            End With
-            System.Net.ServicePointManager.Expect100Continue = True
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or SecurityProtocolType.Tls11 Or SecurityProtocolType.Tls12 Or SecurityProtocolType.Ssl3 Or CType(3072, SecurityProtocolType)
-            Dim webClient As New Net.WebClient
-            Dim number = webClient.DownloadString("http://digitalbusinessbazaar.com/wp/getnumber.php?id=3&mobile=" + mobile + "&request=" + HttpUtility.UrlEncode(DriveSerial.ToString("X2")))
-            Return number
+            Dim mac = getMac()
+            Dim Json = getServerData(ServerURL + "insertorderdata/" + mobile + "/" + appversion + "/" + HttpUtility.UrlEncode(mac) + "/", False)
+            Dim orderData = jsonParse(Json)
+            If orderData("status") = "1" Then
+                SaveSetting(ApplicationTitle, "request", "MACID", mac)
+                Return orderData("data")
+            Else
+                Return orderData("description")
+            End If
         Catch ex As Exception
+            MsgBox(ex.Message)
             Return "Something Went Wrong, Try Again"
-        End Try
-    End Function
-
-    Public Function GetWapi() As String
-        Try
-            System.Net.ServicePointManager.Expect100Continue = True
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or SecurityProtocolType.Tls11 Or SecurityProtocolType.Tls12 Or SecurityProtocolType.Ssl3 Or CType(3072, SecurityProtocolType)
-            Dim wc As New WebClient
-            Return wc.DownloadString(API.GetWAPI & Now.ToString("yyyyMMddhhmmss"))
-        Catch ex As Exception
-            Return ""
         End Try
 
     End Function
@@ -569,35 +490,48 @@ Module WhatsappBulkSenderModule
         End Try
     End Function
     Public Sub CheckLicense()
+        Dim mac = getMac()
         On Error Resume Next
         Dim srvdate As Long = Val(GetServerDate())
         Dim result As ActivationCodeResponse
-        System.Net.ServicePointManager.Expect100Continue = True
-        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or SecurityProtocolType.Tls11 Or SecurityProtocolType.Tls12 Or SecurityProtocolType.Ssl3 Or CType(3072, SecurityProtocolType)
-        Dim lic = New System.Net.WebClient().DownloadString("http://bulkwhatsappmarketing.in/getlic.php?id=3&license=" + HttpUtility.UrlEncode(GetSetting(Application.ProductName, "license", "key", "")))
-        result = ClsLicence.ValidateLicense(lic)
-        If Not IsNothing(result) Then
-            If result.IsExsist Then
-                If Not IsNothing(result.Response) Then
-                    If srvdate < Val(result.Response.ExpiryDate) Then
-                        If result.Response.Status = 1 Then
-                            ExpriyDate = result.Response.ExpiryDate
-                            TotalDays = ClsLicence.GetRemianingDays(result.Response.ExpiryDate, srvdate)
-                            AllowSending = result.Response.AllowSending
-                            AllowAutoReply = result.Response.AllowBot
-                            allowFilter = result.Response.AllowFilter
-                            Exit Sub
-                        Else
-                            SaveSetting(ApplicationTitle, "request", "key", "")
-                        End If
-                    Else
-                        SaveSetting(ApplicationTitle, "request", "key", "")
-                    End If
-                End If
+        Dim lic As String = GetSetting(Application.ProductName, "license", "key", "")
+        If (lic <> "") Then
+            Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+            Dim licenseJson As String = getServerData(ServerURL + "isvalidlicense/" + ordernumber + "/" + lic + "/" + appversion + "/" + mac, False)
+            Dim licenseData = jsonParse(licenseJson)
+            If licenseData("status").ToString() = "1" Then
+                ExpriyDate = licenseData("valid_till")
+                TotalDays = ClsLicence.GetRemianingDays(licenseData("valid_till"), srvdate)
+                AllowSending = True
+                AllowAutoReply = True
+                allowFilter = True
+            Else
+                FrmLicense.ShowDialog()
             End If
+        Else
+            FrmLicense.ShowDialog()
         End If
-        FrmLicense.ShowDialog()
     End Sub
+    Public Function CheckLicence(ByVal License As String) As Object
+        Try
+            Dim mac = getMac()
+            If (License <> "") Then
+                Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+                Dim licenseJson As String = getServerData(ServerURL + "isvalidlicense/" + ordernumber + "/" + License + "/" + appversion + "/" + mac, False)
+                Dim licenseData = jsonParse(licenseJson)
+                Return licenseData
+            Else
+                Dim licenseData As New Dictionary(Of String, String)
+                licenseData("status") = "0"
+                licenseData("description") = ""
+                Return licenseData
+            End If
+        Catch ex As Exception
+            Dim licenseData As New Dictionary(Of String, String)
+            licenseData("status") = "0"
+            licenseData("description") = ex.Message
+        End Try
+    End Function
     Public Sub ApplyColor(ByRef obj As Object)
         Dim _t As Object
         If obj.backcolor = Color.FromArgb(0, 191, 165) Then
@@ -628,6 +562,104 @@ Module WhatsappBulkSenderModule
 
     Public Function SafeJavaScript(ByVal str As String) As String
         Return HttpUtility.JavaScriptStringEncode(str)
+    End Function
+
+    Public Function getMac() As String
+        Try
+            Dim DriveSerial As Integer
+            Dim fso As Object = CreateObject("Scripting.FileSystemObject")
+            Dim Drv As Object = fso.GetDrive(fso.GetDriveName(Application.StartupPath))
+            With Drv
+                If .IsReady Then
+                    DriveSerial = .SerialNumber
+                Else    '"Drive Not Ready!"
+                    DriveSerial = -1
+                End If
+            End With
+            Dim nics() As NetworkInterface = NetworkInterface.GetAllNetworkInterfaces()
+            Dim registryMacId = GetSetting(ApplicationTitle, "request", "MACID", "")
+            Dim mac
+            If registryMacId IsNot "" Then
+                For Each nic As NetworkInterface In nics
+                    If registryMacId = nic.GetPhysicalAddress().ToString() Then
+                        mac = nic.GetPhysicalAddress().ToString()
+                    End If
+                Next
+            Else
+                If CheckOrderNumberExist() Then
+                    Dim getMacId = GetMacIdFromOrderId()
+                    Console.WriteLine("getMacId " & getMacId)
+                    For Each nic As NetworkInterface In nics
+                        If getMacId = nic.GetPhysicalAddress().ToString() Then
+                            mac = nic.GetPhysicalAddress().ToString()
+                        End If
+                    Next
+                Else
+                    mac = nics(0).GetPhysicalAddress().ToString()
+                End If
+
+            End If
+            If (mac = "") Then
+                mac = DriveSerial.ToString("X2")
+            End If
+            Console.WriteLine("mac : " & mac)
+            Return mac
+        Catch ex As Exception
+            Console.WriteLine(ex)
+            Return "Invalid Mac"
+        End Try
+    End Function
+
+    Public Function getServerData(url As String, Optional concate As Boolean = True) As String
+        Try
+            Dim webClient As New Net.WebClient
+            Dim data = ""
+            If concate Then
+                data = webClient.DownloadString(url & "&l=" & Now.ToString("yyyyMMddhhmmss"))
+            Else
+                data = webClient.DownloadString(url & "?l=" & Now.ToString("yyyyMMddhhmmss"))
+            End If
+            Return data
+        Catch ex As Exception
+            MsgBox("Not able to connect with Server check your Internet Connection" & ex.Message)
+            Return "Something Went Wrong, Try Again"
+        End Try
+    End Function
+    Public Function jsonParse(Json As String) As Object
+        Try
+            Return JsonConvert.DeserializeObject(Json)
+        Catch ex As Exception
+            Return JsonConvert.DeserializeObject("{status: 0,description:'Data Parsing Error'}")
+        End Try
+    End Function
+
+    Public Function CheckOrderNumberExist() As Boolean
+        Try
+            Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+            If ordernumber IsNot "" Then
+                Dim orderExist As String = getServerData(ServerURL + "isorderexist/" + ordernumber, False)
+                Return CBool(orderExist)
+            Else
+                Return False
+            End If
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function GetMacIdFromOrderId() As String
+        Try
+            Dim ordernumber = GetSetting(ApplicationTitle, "request", "key", "")
+            If ordernumber IsNot "" Then
+                Dim macId As String = getServerData(ServerURL + "getmacidbyorder/" + ordernumber, False)
+                SaveSetting(ApplicationTitle, "request", "MACID", macId)
+                Return macId
+            Else
+                Return ""
+            End If
+        Catch ex As Exception
+            Return ""
+        End Try
     End Function
 
 End Module
