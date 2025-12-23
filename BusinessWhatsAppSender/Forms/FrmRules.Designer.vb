@@ -59,6 +59,10 @@ Partial Class FrmRules
         Me.ToolStripMenuItem20 = New System.Windows.Forms.ToolStripSeparator()
         Me.StickersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
+        Me.ButtonMessage = New System.Windows.Forms.Label()
+        Me.ButtonConfig = New System.Windows.Forms.Button()
+        Me.ButtonInclude = New System.Windows.Forms.CheckBox()
+        Me.IncludeListButton = New System.Windows.Forms.CheckBox()
         Me.ContextMenuMediaType.SuspendLayout()
         Me.ContextMenuStripAttachFiles.SuspendLayout()
         Me.SuspendLayout()
@@ -150,7 +154,7 @@ Partial Class FrmRules
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(390, 374)
+        Me.ButtonOK.Location = New System.Drawing.Point(387, 430)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 34)
         Me.ButtonOK.TabIndex = 4
@@ -159,7 +163,7 @@ Partial Class FrmRules
         '
         'ButtonCancel
         '
-        Me.ButtonCancel.Location = New System.Drawing.Point(309, 374)
+        Me.ButtonCancel.Location = New System.Drawing.Point(306, 430)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 34)
         Me.ButtonCancel.TabIndex = 5
@@ -240,7 +244,7 @@ Partial Class FrmRules
         '
         'GroupBoxDivider
         '
-        Me.GroupBoxDivider.Location = New System.Drawing.Point(-12, 363)
+        Me.GroupBoxDivider.Location = New System.Drawing.Point(1, 417)
         Me.GroupBoxDivider.Name = "GroupBoxDivider"
         Me.GroupBoxDivider.Size = New System.Drawing.Size(521, 7)
         Me.GroupBoxDivider.TabIndex = 14
@@ -251,7 +255,7 @@ Partial Class FrmRules
         Me.BtnStrike.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(9, Byte), Integer), CType(CType(144, Byte), Integer), CType(CType(122, Byte), Integer))
         Me.BtnStrike.FlatAppearance.BorderSize = 0
         Me.BtnStrike.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.BtnStrike.Font = New System.Drawing.Font("Arial Narrow", 11.25!, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnStrike.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnStrike.ForeColor = System.Drawing.Color.Black
         Me.BtnStrike.Location = New System.Drawing.Point(431, 170)
         Me.BtnStrike.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
@@ -311,7 +315,7 @@ Partial Class FrmRules
         Me.CheckBoxEnable.AutoSize = True
         Me.CheckBoxEnable.Checked = True
         Me.CheckBoxEnable.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBoxEnable.Location = New System.Drawing.Point(11, 383)
+        Me.CheckBoxEnable.Location = New System.Drawing.Point(12, 436)
         Me.CheckBoxEnable.Name = "CheckBoxEnable"
         Me.CheckBoxEnable.Size = New System.Drawing.Size(79, 17)
         Me.CheckBoxEnable.TabIndex = 108
@@ -322,36 +326,36 @@ Partial Class FrmRules
         '
         Me.ContextMenuStripAttachFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PhotosToolStripMenuItem, Me.VideosToolStripMenuItem, Me.DocumentsToolStripMenuItem, Me.ToolStripMenuItem20, Me.StickersToolStripMenuItem})
         Me.ContextMenuStripAttachFiles.Name = "ContextMenuStripAttachFiles"
-        Me.ContextMenuStripAttachFiles.Size = New System.Drawing.Size(181, 120)
+        Me.ContextMenuStripAttachFiles.Size = New System.Drawing.Size(165, 98)
         '
         'PhotosToolStripMenuItem
         '
         Me.PhotosToolStripMenuItem.Name = "PhotosToolStripMenuItem"
-        Me.PhotosToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.PhotosToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.PhotosToolStripMenuItem.Text = "Photos"
         '
         'VideosToolStripMenuItem
         '
         Me.VideosToolStripMenuItem.Name = "VideosToolStripMenuItem"
-        Me.VideosToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.VideosToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.VideosToolStripMenuItem.Text = "Videos"
         Me.VideosToolStripMenuItem.Visible = False
         '
         'DocumentsToolStripMenuItem
         '
         Me.DocumentsToolStripMenuItem.Name = "DocumentsToolStripMenuItem"
-        Me.DocumentsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DocumentsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.DocumentsToolStripMenuItem.Text = "Documents"
         '
         'ToolStripMenuItem20
         '
         Me.ToolStripMenuItem20.Name = "ToolStripMenuItem20"
-        Me.ToolStripMenuItem20.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripMenuItem20.Size = New System.Drawing.Size(161, 6)
         '
         'StickersToolStripMenuItem
         '
         Me.StickersToolStripMenuItem.Name = "StickersToolStripMenuItem"
-        Me.StickersToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.StickersToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.StickersToolStripMenuItem.Text = "Image as Stickers"
         Me.StickersToolStripMenuItem.Visible = False
         '
@@ -365,11 +369,53 @@ Partial Class FrmRules
         Me.ComboBox1.Size = New System.Drawing.Size(121, 21)
         Me.ComboBox1.TabIndex = 109
         '
+        'ButtonMessage
+        '
+        Me.ButtonMessage.AutoSize = True
+        Me.ButtonMessage.Location = New System.Drawing.Point(12, 370)
+        Me.ButtonMessage.Name = "ButtonMessage"
+        Me.ButtonMessage.Size = New System.Drawing.Size(84, 13)
+        Me.ButtonMessage.TabIndex = 111
+        Me.ButtonMessage.Text = "Button Message"
+        '
+        'ButtonConfig
+        '
+        Me.ButtonConfig.Location = New System.Drawing.Point(238, 388)
+        Me.ButtonConfig.Name = "ButtonConfig"
+        Me.ButtonConfig.Size = New System.Drawing.Size(93, 26)
+        Me.ButtonConfig.TabIndex = 112
+        Me.ButtonConfig.Text = "Config Buttons"
+        Me.ButtonConfig.UseVisualStyleBackColor = True
+        '
+        'ButtonInclude
+        '
+        Me.ButtonInclude.AutoSize = True
+        Me.ButtonInclude.Location = New System.Drawing.Point(12, 394)
+        Me.ButtonInclude.Name = "ButtonInclude"
+        Me.ButtonInclude.Size = New System.Drawing.Size(100, 17)
+        Me.ButtonInclude.TabIndex = 113
+        Me.ButtonInclude.Text = "Include Buttons"
+        Me.ButtonInclude.UseVisualStyleBackColor = True
+        '
+        'IncludeListButton
+        '
+        Me.IncludeListButton.AutoSize = True
+        Me.IncludeListButton.Location = New System.Drawing.Point(118, 394)
+        Me.IncludeListButton.Name = "IncludeListButton"
+        Me.IncludeListButton.Size = New System.Drawing.Size(114, 17)
+        Me.IncludeListButton.TabIndex = 114
+        Me.IncludeListButton.Text = "Include List Button"
+        Me.IncludeListButton.UseVisualStyleBackColor = True
+        '
         'FrmRules
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(477, 418)
+        Me.ClientSize = New System.Drawing.Size(477, 471)
+        Me.Controls.Add(Me.IncludeListButton)
+        Me.Controls.Add(Me.ButtonInclude)
+        Me.Controls.Add(Me.ButtonConfig)
+        Me.Controls.Add(Me.ButtonMessage)
         Me.Controls.Add(Me.ComboBox1)
         Me.Controls.Add(Me.CheckBoxEnable)
         Me.Controls.Add(Me.ButtonEmoji)
@@ -440,4 +486,8 @@ Partial Class FrmRules
     Friend WithEvents ToolStripMenuItem6 As ToolStripSeparator
     Friend WithEvents OpenFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ComboBox1 As ComboBox
+    Friend WithEvents ButtonMessage As Label
+    Friend WithEvents ButtonConfig As Button
+    Friend WithEvents ButtonInclude As CheckBox
+    Friend WithEvents IncludeListButton As CheckBox
 End Class

@@ -1,10 +1,16 @@
 ﻿Imports System.ComponentModel
+Imports Newtonsoft.Json
+Imports WhatsAppBusinessMarketingSoftware.FrmButtonConfig
+Imports System.IO
+Imports WhatsAppBusinessMarketingSoftware.ClsButtonConfig
 
 Public Class FrmMain
     Dim _success As Integer
     Private isMouseDown As Boolean = False
     Private mouseOffset As Point
     Dim _resp As AccountSwticherDetails
+    Public _includeButton As Boolean = False
+    Public _includeListButtons As Boolean = False
 
     Private Sub ToolStripButton3_Click(sender As Object, e As EventArgs) Handles ClearListToolStripMenuItem.Click
 
@@ -46,24 +52,32 @@ Public Class FrmMain
             MsgBox("Ensure that you are logged in into WhatsApp.", vbCritical, Application.ProductName)
             Exit Sub
         End If
-
         If DemoMode Then : ShowDemoMessage() : End If
-
-
         If LstNumbers.Items.Count = 0 Then
             MsgBox(GetLangbyKey("No_destination_to_send"), vbInformation, Application.ProductName)
             Exit Sub
         End If
-
-
+        If _includeButton Then
+            If File.Exists(ClsSpecialDirectories.ButtonsFolder & "buttonData.json") Then
+                Dim json As String = File.ReadAllText(ClsSpecialDirectories.ButtonsFolder & "buttonData.json")
+                Dim data As ButtonConfigData = JsonConvert.DeserializeObject(Of ButtonConfigData)(json)
+                Console.WriteLine(data)
+                If Not data.body <> "" Then
+                    MsgBox("Please enter button Body", vbCritical, Application.ProductName)
+                    Exit Sub
+                End If
+            Else
+                Console.WriteLine("elseeeeeeeeeeee")
+                MsgBox("Please add button in config buttons", vbCritical, Application.ProductName)
+                Exit Sub
+            End If
+        End If
+        Console.WriteLine("|Gdfgdfgfdgdfgdfgdf")
         Dim DestinationsList As New List(Of DestinationModel)
         For Each DestinationListItem As ListViewItem In LstNumbers.Items
-
             Dim FullName As String = DestinationListItem.Text
             Dim FirstName As String
             Dim LastName As String
-
-
             If FullName <> "" And FullName <> "N/A" Then
                 If FullName.Contains(" ") Then
                     FirstName = FullName.Split(" ")(0)
@@ -86,7 +100,6 @@ Public Class FrmMain
                                                             .Var4 = DestinationListItem.SubItems(5).Text,
                                                             .Var5 = DestinationListItem.SubItems(6).Text})
         Next
-
         Dim MessageTab As Object
         Dim MessageText As Object
         Dim ContentToSend As Integer = 0
@@ -98,15 +111,12 @@ Public Class FrmMain
                 End If
             Next
         Next
-
         Dim AttachmentList As New List(Of AttachmentModel)
         For Each AttachmentListItem As ListViewItem In LstMedia.Items
             AttachmentList.Add(New AttachmentModel With {.FileName = AttachmentListItem.Tag,
                                                          .Type = AttachmentListItem.SubItems(1).Text,
                                                          .Caption = AttachmentListItem.SubItems(2).Text})
         Next
-
-
         If sender.Name = "ButtonSchedule" Then
             If FrmSendingMode.ShowDialog = DialogResult.OK Then
                 FrmSending.RefDate = FrmSendingMode.DatetoSend
@@ -114,7 +124,6 @@ Public Class FrmMain
                 Exit Sub
             End If
         End If
-
         FrmSending.BulkDestinations = DestinationsList
         FrmSending.BulkMessages = MessagesList
         FrmSending.BulkAttachments = AttachmentList
@@ -598,8 +607,8 @@ Public Class FrmMain
         If LstMedia.Items.Count > 0 Then
             If LstMedia.SelectedItems.Count > 0 Then
                 If LstMedia.SelectedItems(0).Text <> "" Then
-                    If LstMedia.SelectedItems(0).SubItems(1).Text = "Photo" Or LstMedia.SelectedItems(0).SubItems(1).Text = "Video" Then
-                        Try
+                    ' If LstMedia.SelectedItems(0).SubItems(1).Text = "Photo" Or LstMedia.SelectedItems(0).SubItems(1).Text = "Video" Then
+                    Try
                             FrmSetCaption.TxtCaption.Text = LstMedia.SelectedItems(0).SubItems(2).Text
                         Catch ex As Exception
                             FrmSetCaption.TxtCaption.Text = ""
@@ -608,7 +617,7 @@ Public Class FrmMain
                         If FrmSetCaption.dlgResult = DialogResult.OK Then
                             LstMedia.SelectedItems(0).SubItems(2).Text = FrmSetCaption.Caption
                         End If
-                    End If
+                    'End If
                 End If
             End If
         End If
@@ -779,6 +788,7 @@ Public Class FrmMain
         FrmBrowser.Show()
         FrmBrowser.Activate()
         FrmBrowser.WindowState = FormWindowState.Normal
+        'FrmBrowser.OpenWhatsapp()
     End Sub
     Private Async Sub ImportFromWhatsAppContactsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFromWhatsAppContactsToolStripMenuItem.Click, WhatsAppContactsToolStripMenuItem.Click
         If DemoMode Then : ShowDemoMessage() : End If
@@ -943,7 +953,7 @@ Public Class FrmMain
 
     Private Sub DocumentsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DocumentsToolStripMenuItem.Click
         Dim OpenDlg As New OpenFileDialog()
-        OpenDlg.Filter = "*.txt;*.pdf;*.csv;*.xlsx;*.xls|*.txt;*.pdf;*.csv;*.xlsx;*.xls"
+        OpenDlg.Filter = "*.txt;*.pdf;*.csv;*.xlsx;*.xls|*.txt;*.pdf;*.csv;*.xlsx;*.xls;*.doc;*.docx"
 
         OpenDlg.Multiselect = True
         If OpenDlg.ShowDialog() = DialogResult.OK Then
@@ -1047,9 +1057,6 @@ Public Class FrmMain
     End Sub
     Public Sub SaveAutoReplyRules()
         Try
-
-
-
             Dim li As ListViewItem
             Dim lst As New List(Of ClsRuleModel)
             Dim _rule As ClsRuleModel
@@ -1321,6 +1328,9 @@ Public Class FrmMain
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         If API.GMBEnable.Equals("TRUE") Then
+            If LicenseMode Then
+                CheckLicense()
+            End If
             GMB.Show()
         Else
             Process.Start(WebsiteURL)
@@ -1332,5 +1342,19 @@ Public Class FrmMain
         If API.version <> version Then
             vupdate.Show()
         End If
+    End Sub
+
+    Private Sub includeButtons_CheckedChanged(sender As Object, e As EventArgs) Handles includeButtons.CheckedChanged
+        _includeButton = includeButtons.Checked
+    End Sub
+
+    Private Sub configButton_Click(sender As Object, e As EventArgs) Handles configButton.Click
+        Dim buttonForm As New FrmButtonConfig()
+        If buttonForm.ShowDialog() = DialogResult.OK Then
+        End If
+    End Sub
+
+    Private Sub includeListButton_CheckedChanged(sender As Object, e As EventArgs) Handles includeListButton.CheckedChanged
+        _includeListButtons = includeListButton.Checked
     End Sub
 End Class

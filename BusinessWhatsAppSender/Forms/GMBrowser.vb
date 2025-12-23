@@ -31,7 +31,7 @@ Public Class GMBrowser
             Dim _isLoggedIn = 0
             Do
                 Try
-                    _isLoggedIn = Await WebView22.ExecuteScriptAsync("document.getElementsByClassName('id-app-container').length;")
+                    _isLoggedIn = Await WebView22.ExecuteScriptAsync("document.querySelectorAll('div.Nv2PK').length")
                 Catch ex As Exception
                     _isLoggedIn = 0
                 End Try
@@ -39,7 +39,9 @@ Public Class GMBrowser
                 Application.DoEvents()
             Loop Until _isLoggedIn > 0
             Await WebView22.ExecuteScriptAsync(API.GMBScroll)
+            System.Threading.Thread.Sleep(2000)
             WebView22.ExecuteScriptAsync(API.GMBScript)
+            System.Threading.Thread.Sleep(2000)
         Catch ex As Exception
             Console.WriteLine(ex)
         End Try

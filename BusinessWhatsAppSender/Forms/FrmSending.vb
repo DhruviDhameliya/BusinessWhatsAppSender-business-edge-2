@@ -193,6 +193,8 @@ Public Class FrmSending
             childForm.Messages = BulkMessages
             childForm.ThreadNo = chnl.Count
             childForm.MediaFiles = BulkAttachments
+            childForm.IncludeButtons = FrmMain._includeButton
+            childForm.IncludeListButtons = FrmMain._includeButton
             Threading.Thread.Sleep(500)
             childForm.LoadBrowserWithWAPI(profile.ToString())
             chnl.Add(childForm)
@@ -214,6 +216,8 @@ Public Class FrmSending
         Next
         BulkIsLoggedIn = True
         For Each _wa In chnl
+            _wa.MediaFiles = BulkAttachments
+            Console.WriteLine("waaaaaaaaaaaaaaaa")
             _wa.Send()
             Application.DoEvents()
         Next

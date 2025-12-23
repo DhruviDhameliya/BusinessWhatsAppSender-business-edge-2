@@ -59,6 +59,7 @@ Partial Class FrmLanguage
         '
         Me.ComboBoxLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxLanguage.FormattingEnabled = True
+        Me.ComboBoxLanguage.Items.AddRange(New Object() {"Italiano"})
         Me.ComboBoxLanguage.Location = New System.Drawing.Point(20, 43)
         Me.ComboBoxLanguage.Name = "ComboBoxLanguage"
         Me.ComboBoxLanguage.Size = New System.Drawing.Size(210, 21)

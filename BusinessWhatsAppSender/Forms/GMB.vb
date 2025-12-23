@@ -30,7 +30,7 @@
         Button3.Visible = True
         Button11.Visible = True
         Button12.Visible = True
-        ' GMBrowser.Close()
+        GMBrowser.Close()
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
