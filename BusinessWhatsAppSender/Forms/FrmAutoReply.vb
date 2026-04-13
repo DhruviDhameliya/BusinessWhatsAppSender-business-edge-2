@@ -1,4 +1,7 @@
-﻿Public Class FrmAutoReply
+﻿Imports Newtonsoft.Json
+
+Public Class FrmAutoReply
+    Public AutoReplayData As ClsAutoReplyMessage
     Private Sub ButtonEmoji_Click(sender As Object, e As EventArgs) Handles ButtonEmoji.Click
         Process.Start("https://www.emojicopy.com/")
     End Sub
@@ -181,6 +184,17 @@
     Private Sub ButtonOK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click
         Dim _autoReplyObject As New ClsAutoReplyMessage
         _autoReplyObject.Message = TextBoxMessage.Text
+        If AutoReplayData IsNot Nothing Then
+            If AutoReplayData.ButtonConfigData IsNot Nothing Then
+                _autoReplyObject.ButtonConfigData = AutoReplayData.ButtonConfigData
+            End If
+            If AutoReplayData.ButtonListData IsNot Nothing Then
+                _autoReplyObject.ButtonListData = AutoReplayData.ButtonListData
+            End If
+        End If
+        _autoReplyObject.ButtonInclude = ButtonInclude.Checked
+        _autoReplyObject.IncludeListButton = IncludeListButton.Checked
+
         Dim _t As ClsAttachment
         Dim li As ListViewItem
         Dim lMedia As New List(Of ClsAttachment)
@@ -194,7 +208,7 @@
             lMedia.Add(_t)
             _autoReplyObject.Attachment = lMedia
         Next
-
+        AutoReplayData = _autoReplyObject
         Dim _autoreplyJson = Newtonsoft.Json.JsonConvert.SerializeObject(_autoReplyObject)
 
         IO.File.WriteAllText(ClsSpecialDirectories.Getdata & "autoreply.json", _autoreplyJson)
@@ -213,7 +227,10 @@
         If IO.File.Exists(ClsSpecialDirectories.Getdata & "autoreply.json") Then
             Try
                 Dim _jsonResult As ClsAutoReplyMessage = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ClsAutoReplyMessage)(IO.File.ReadAllText(ClsSpecialDirectories.Getdata & "autoreply.json"))
+                AutoReplayData = _jsonResult
                 TextBoxMessage.Text = _jsonResult.Message
+                ButtonInclude.Checked = CBool(_jsonResult.ButtonInclude)
+                IncludeListButton.Checked = CBool(_jsonResult.IncludeListButton)
                 Dim t As ClsAttachment
                 Dim li As ListViewItem
                 If Not IsNothing(_jsonResult.Attachment) Then
@@ -227,9 +244,24 @@
                     Next
                 End If
             Catch ex As Exception
-
+                Console.WriteLine(ex)
             End Try
 
+        End If
+    End Sub
+
+    Private Sub ButtonConfig_Click(sender As Object, e As EventArgs) Handles ButtonConfig.Click
+        FrmAutoReplyButtonConfig.IsRule = False
+        If AutoReplayData IsNot Nothing Then
+            If AutoReplayData.ButtonConfigData IsNot Nothing Then
+                FrmAutoReplyButtonConfig.ButtonConfigData = AutoReplayData.ButtonConfigData
+            End If
+            If AutoReplayData.ButtonListData IsNot Nothing Then
+                FrmAutoReplyButtonConfig.ButtonListData = AutoReplayData.ButtonListData
+            End If
+        End If
+
+        If FrmAutoReplyButtonConfig.ShowDialog() = DialogResult.OK Then
         End If
     End Sub
 End Class

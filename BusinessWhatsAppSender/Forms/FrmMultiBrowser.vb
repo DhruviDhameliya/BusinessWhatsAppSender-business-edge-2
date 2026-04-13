@@ -1,6 +1,10 @@
 ﻿Imports System.Threading
 Imports Microsoft.Web.WebView2.Core
 Imports Newtonsoft.Json
+Imports WhatsAppBusinessMarketingSoftware.FrmButtonConfig
+Imports System.IO
+Imports WhatsAppBusinessMarketingSoftware.ClsButtonConfig
+Imports System.ComponentModel
 
 Public Class FrmMultiBrowser
     Dim connected = False
@@ -9,6 +13,8 @@ Public Class FrmMultiBrowser
     Public MediaFiles As New List(Of AttachmentModel)
     Private MainThread As Thread
     Public ThreadNo As String
+    Public IncludeButtons As Boolean
+    Public IncludeListButtons As Boolean
 
     Private BrowserProfile As String
 
@@ -17,6 +23,8 @@ Public Class FrmMultiBrowser
         Try
             Try
                 WebView21.InitializeLifetimeService()
+                Me.WindowState = FormWindowState.Maximized
+                WebView21.Dock = DockStyle.Fill
             Catch ex As Exception
                 If MsgBox($"You have to install Edge Runtime to start the application.{vbCrLf} Do you want install it?",
                       vbCritical + vbYesNo, Application.ProductName) = vbYes Then
@@ -71,7 +79,7 @@ Public Class FrmMultiBrowser
                     Try
                         Process.Start("https://developer.microsoft.com/en-us/microsoft-edge/webview2/")
                     Catch
-
+                        Console.WriteLine(ex)
                     End Try
                 End If
                 End
@@ -86,7 +94,7 @@ Public Class FrmMultiBrowser
                     webView2Environment = CoreWebView2Environment.CreateAsync(Nothing, ClsSpecialDirectories.GetProfiles & profile).Result
                 End If
             Catch ex As Exception
-
+                Console.WriteLine(ex)
             End Try
             Await WebView21.EnsureCoreWebView2Async(webView2Environment)
             WebView21.Source = New Uri("https://web.whatsapp.com/")
@@ -101,6 +109,7 @@ Public Class FrmMultiBrowser
                     End If
                 Catch ex As Exception
                     _isLoggedIn = 0
+                    Console.WriteLine(ex)
                 End Try
                 Thread.Sleep(300)
                 Application.DoEvents()
@@ -154,6 +163,13 @@ Public Class FrmMultiBrowser
                 Console.WriteLine(SentMessage.MessageID & " : " & SentMessage.BuLkMessageDestination)
 
                 If SendingResult Then
+                    If IncludeButtons Then
+                        Dim buttonConfigData As ButtonConfigData = Await FrmBrowser.GetButtonConfigData()
+                        Await SendButtonMessage(Destination.WhatsAppID, buttonConfigData)
+                    End If
+                    If IncludeListButtons Then
+                        Await SendListButtonMessage(Destination.WhatsAppID)
+                    End If
                     If Not IsNothing(MediaFiles) Then
                         For Each Attachment As AttachmentModel In MediaFiles
                             Dim AttachmentCaption As String = Attachment.Caption
@@ -187,14 +203,65 @@ Public Class FrmMultiBrowser
             BulkIsSending = False
             BulkIsStarted = False
         Catch ex As Exception
-
+            Console.WriteLine(ex)
         End Try
     End Sub
 
+
+    Public Async Function SendButtonMessage(ByVal WhatsAppAccount As String, ByVal ButtonConfigData As ButtonConfigData) As Task(Of String)
+        Try
+            Dim status = """null"""
+            Dim FinalData As Object = Await FrmBrowser.CreateButtonObject(ButtonConfigData)
+            Try
+                WebView21.BeginInvoke(Async Sub()
+                                          Await WebView21.ExecuteScriptAsync("tlsbot.sendMessageStatus='null'")
+                                      End Sub)
+                WebView21.BeginInvoke(Async Sub()
+                                          Await WebView21.ExecuteScriptAsync($"tlsbot.sendTextMessageWithButtons('{WhatsAppAccount}','{SafeJavaScript(ButtonConfigData.body)}',{FinalData}).then(e=>tlsbot.sendMessageStatus=e)")
+                                      End Sub)
+                Do
+                    Thread.Sleep(100)
+                    WebView21.BeginInvoke(Async Sub()
+                                              status = Await WebView21.ExecuteScriptAsync("tlsbot.sendMessageStatus")
+                                          End Sub)
+                Loop While status.ToString() = """null"""
+            Catch ex As Exception
+                Console.WriteLine(ex)
+            End Try
+            Dim ReceivedStatus = JsonConvert.DeserializeObject(status.ToString())            'Return ReceivedStatus("sentStatus")
+        Catch ex As Exception
+            Console.WriteLine(ex)
+            'Return False
+        End Try
+    End Function
+
+    Public Async Function SendListButtonMessage(ByVal WhatsAppAccount As String) As Task(Of String)
+        Try
+            Dim status = """null"""
+            Try
+                Dim json As String = File.ReadAllText(ClsSpecialDirectories.ButtonsFolder & "buttonListData.json")
+
+                Dim data As LabelRootObject = JsonConvert.DeserializeObject(Of LabelRootObject)(json)
+                Dim outputJson As String = JsonConvert.SerializeObject(data, Formatting.Indented)
+                Try
+                    WebView21.BeginInvoke(Async Sub()
+                                              Await WebView21.ExecuteScriptAsync($"tlsbot.sendListMessage('{WhatsAppAccount}','{SafeJavaScript(data.description)}',{outputJson})")
+                                          End Sub)
+                Catch ex As Exception
+                    Console.WriteLine("Catch")
+                End Try
+                Thread.Sleep(100)
+            Catch ex As Exception
+                Console.WriteLine(ex)
+            End Try
+        Catch ex As Exception
+            Console.WriteLine("SendFile Catch : ")
+            Console.WriteLine(ex)
+        End Try
+    End Function
     Private Function GetDelay() As Integer
         Dim Num1 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayStart", "0"))
         Dim Num2 As Integer = Val(GetSetting(ApplicationTitle, "SendingConfig", "DelayEnd", "2"))
-
         Randomize()
         Dim a As Integer = 10
         If Num2 > 0 Then
@@ -258,5 +325,10 @@ Public Class FrmMultiBrowser
             Console.WriteLine(ex)
         End Try
     End Function
+
+    Private Sub FrmMultiBrowser_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        e.Cancel = True
+        Me.Hide()
+    End Sub
 
 End Class
