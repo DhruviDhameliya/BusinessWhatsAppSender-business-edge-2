@@ -46,15 +46,15 @@
         Dim dlg As New SaveFileDialog
         dlg.Filter = "*.txt|*.txt"
         Dim result As String = ""
+
         If dlg.ShowDialog() = DialogResult.OK Then
             Dim t As String
-
             For Each t In ListBox1.Items
-                result = result & t & vbNewLine
+                result &= t & vbNewLine
             Next
+            IO.File.WriteAllText(dlg.FileName, result)
+            MsgBox("Contacts have been exported successfully", vbInformation, Application.ProductName)
         End If
-        IO.File.WriteAllText(dlg.FileName, result)
-        MsgBox("Contacts has beedn exported successfully", vbInformation, Application.ProductName)
     End Sub
 
     Private Sub BtnSelectAll_Click(sender As Object, e As EventArgs) Handles BtnSelectAll.Click

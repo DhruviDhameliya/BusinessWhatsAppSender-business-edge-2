@@ -1,4 +1,7 @@
-﻿Public Class FrmRules
+﻿Imports Newtonsoft.Json
+Imports WhatsAppBusinessMarketingSoftware.ClsButtonConfig
+
+Public Class FrmRules
     Public Rule As ClsRuleModel
 
     Private Sub ButtonEmoji_Click(sender As Object, e As EventArgs) Handles ButtonEmoji.Click
@@ -28,7 +31,7 @@
         ListViewAttachment.Items.Clear()
     End Sub
 
-    Private Sub ButtonDelete_Click(sender As Object, e As EventArgs) Handles ButtonDelete.Click, DeleteToolStripMenuItem1.Click
+    Private Sub ButtonDelete_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem1.Click, ButtonDelete.Click
         If ListViewAttachment.SelectedItems().Count > 0 Then
             If ListViewAttachment.SelectedItems(0).Text <> "" Then
                 ListViewAttachment.SelectedItems(0).Remove()
@@ -148,7 +151,7 @@
         Next
         Return False
     End Function
-    Private Sub LstMedia_DoubleClick(sender As Object, e As EventArgs) Handles ListViewAttachment.DoubleClick, OpenFileToolStripMenuItem.Click
+    Private Sub LstMedia_DoubleClick(sender As Object, e As EventArgs) Handles OpenFileToolStripMenuItem.Click, ListViewAttachment.DoubleClick
         If ListViewAttachment.Items.Count > 0 Then
             If ListViewAttachment.SelectedItems.Count > 0 Then
                 If ListViewAttachment.SelectedItems(0).Text <> "" Then
@@ -198,6 +201,17 @@
         _autoReplyObject.RuleName = TextBoxRuleName.Text
         _autoReplyObject.RuleStatus = CheckBoxEnable.Checked
         _autoReplyObject.Operand = ComboBox1.Text
+        _autoReplyObject.ButtonInclude = ButtonInclude.Checked
+        _autoReplyObject.IncludeListButton = IncludeListButton.Checked
+        If Rule IsNot Nothing Then
+            If Rule.ButtonConfigData IsNot Nothing Then
+                _autoReplyObject.ButtonConfigData = Rule.ButtonConfigData
+            End If
+            If Rule.ButtonListData IsNot Nothing Then
+                _autoReplyObject.ButtonListData = Rule.ButtonListData
+            End If
+        End If
+
         Dim _t As ClsAttachment
         Dim li As ListViewItem
         Dim lMedia As New List(Of ClsAttachment)
@@ -234,6 +248,8 @@
                 TextBoxKeyword.Text = Rule.RuleKeyword
                 TextBoxMessage.Text = Rule.RuleMessage
                 CheckBoxEnable.Checked = CBool(Rule.RuleStatus)
+                ButtonInclude.Checked = CBool(Rule.ButtonInclude)
+                IncludeListButton.Checked = CBool(Rule.IncludeListButton)
                 Dim t As ClsAttachment
                 Dim li As ListViewItem
                 If Not IsNothing(Rule.Attachment) Then
@@ -247,11 +263,28 @@
                     Next
                 End If
             Catch ex As Exception
-
+                Console.WriteLine(ex)
             End Try
 
 
         End If
         TextBoxRuleName.SelectAll()
     End Sub
+
+    Private Sub ButtonConfig_Click(sender As Object, e As EventArgs) Handles ButtonConfig.Click
+        FrmAutoReplyButtonConfig.IsRule = True
+
+        If Rule IsNot Nothing Then
+            If Rule.ButtonConfigData IsNot Nothing Then
+                FrmAutoReplyButtonConfig.ButtonConfigData = Rule.ButtonConfigData
+            End If
+            If Rule.ButtonListData IsNot Nothing Then
+                FrmAutoReplyButtonConfig.ButtonListData = Rule.ButtonListData
+            End If
+        End If
+
+        If FrmAutoReplyButtonConfig.ShowDialog() = DialogResult.OK Then
+        End If
+    End Sub
+
 End Class

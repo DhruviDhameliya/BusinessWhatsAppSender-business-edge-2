@@ -12,11 +12,12 @@ Public Class ClsWhatsappChannel
 
     Private MainThread As System.Threading.Thread
     Public Sub Login()
-        ' Dim childForm As New FrmMultiBrowser()
-        FrmMultiBrowser.Show()
-        FrmMultiBrowser.Activate()
-        FrmMultiBrowser.Text = "Multi Channel : " & BrowserProfile
-        FrmMultiBrowser.LoadBrowser(BrowserProfile.ToString())
+        Dim childForm As New FrmMultiBrowser()
+        childForm.Show()
+        childForm.Activate()
+        childForm.Text = "Multi Channel : " & BrowserProfile
+        Console.WriteLine(BrowserProfile)
+        childForm.LoadBrowser(BrowserProfile.ToString())
     End Sub
 
 

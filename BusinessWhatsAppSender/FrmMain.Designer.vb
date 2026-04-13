@@ -164,6 +164,7 @@ Partial Class FrmMain
         Me.ToolStripMenuItem18 = New System.Windows.Forms.ToolStripSeparator()
         Me.InsertRandomTagToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InsertSpintaxToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.configButton = New System.Windows.Forms.Button()
         Me.Panel6 = New System.Windows.Forms.Panel()
         Me.TxtLog = New System.Windows.Forms.TextBox()
         Me.Button4 = New System.Windows.Forms.Button()
@@ -187,6 +188,9 @@ Partial Class FrmMain
         Me.Button15 = New System.Windows.Forms.Button()
         Me.Button16 = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Panel14 = New System.Windows.Forms.Panel()
+        Me.includeListButton = New System.Windows.Forms.CheckBox()
+        Me.includeButtons = New System.Windows.Forms.CheckBox()
         Me.PictureBox4 = New System.Windows.Forms.PictureBox()
         Me.LinkLabel2 = New System.Windows.Forms.LinkLabel()
         Me.CefBrowser = New System.Windows.Forms.WebBrowser()
@@ -266,6 +270,7 @@ Partial Class FrmMain
         Me.ContextMenuStrip1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
+        Me.Panel14.SuspendLayout()
         CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel15.SuspendLayout()
         Me.Panel16.SuspendLayout()
@@ -557,7 +562,7 @@ Partial Class FrmMain
         '
         Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberFilterToolStripMenuItem, Me.GroupGrabberToolStripMenuItem, Me.ToolStripMenuItem7, Me.VirtualNumbersToolStripMenuItem})
         Me.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
-        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(46, 19)
+        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(47, 19)
         Me.ToolsToolStripMenuItem.Text = "Tools"
         '
         'NumberFilterToolStripMenuItem
@@ -656,11 +661,11 @@ Partial Class FrmMain
         Me.LstMedia.Dock = System.Windows.Forms.DockStyle.Fill
         Me.LstMedia.FullRowSelect = True
         Me.LstMedia.HideSelection = False
-        Me.LstMedia.Location = New System.Drawing.Point(1, 27)
+        Me.LstMedia.Location = New System.Drawing.Point(1, 33)
         Me.LstMedia.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.LstMedia.MultiSelect = False
         Me.LstMedia.Name = "LstMedia"
-        Me.LstMedia.Size = New System.Drawing.Size(450, 120)
+        Me.LstMedia.Size = New System.Drawing.Size(450, 114)
         Me.LstMedia.SmallImageList = Me.ImageListMediaType
         Me.LstMedia.TabIndex = 49
         Me.LstMedia.UseCompatibleStateImageBehavior = False
@@ -732,7 +737,7 @@ Partial Class FrmMain
         Me.Panel8.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel8.Location = New System.Drawing.Point(1, 1)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(450, 26)
+        Me.Panel8.Size = New System.Drawing.Size(450, 32)
         Me.Panel8.TabIndex = 40
         '
         'Label17
@@ -740,7 +745,7 @@ Partial Class FrmMain
         Me.Label17.AutoSize = True
         Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label17.ForeColor = System.Drawing.Color.White
-        Me.Label17.Location = New System.Drawing.Point(4, 6)
+        Me.Label17.Location = New System.Drawing.Point(5, 11)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(128, 13)
         Me.Label17.TabIndex = 87
@@ -755,7 +760,7 @@ Partial Class FrmMain
         Me.BtnImgBrowse.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.BtnImgBrowse.ForeColor = System.Drawing.Color.FromArgb(CType(CType(16, Byte), Integer), CType(CType(69, Byte), Integer), CType(CType(77, Byte), Integer))
         Me.BtnImgBrowse.Image = CType(resources.GetObject("BtnImgBrowse.Image"), System.Drawing.Image)
-        Me.BtnImgBrowse.Location = New System.Drawing.Point(422, 0)
+        Me.BtnImgBrowse.Location = New System.Drawing.Point(420, 5)
         Me.BtnImgBrowse.Name = "BtnImgBrowse"
         Me.BtnImgBrowse.Size = New System.Drawing.Size(25, 24)
         Me.BtnImgBrowse.TabIndex = 42
@@ -844,7 +849,7 @@ Partial Class FrmMain
         Me.TxtMsg.Multiline = True
         Me.TxtMsg.Name = "TxtMsg"
         Me.TxtMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TxtMsg.Size = New System.Drawing.Size(434, 198)
+        Me.TxtMsg.Size = New System.Drawing.Size(434, 171)
         Me.TxtMsg.TabIndex = 40
         '
         'LinkFullName
@@ -910,7 +915,7 @@ Partial Class FrmMain
         Me.BtnEmoji.Font = New System.Drawing.Font("Wingdings", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(2, Byte))
         Me.BtnEmoji.ForeColor = System.Drawing.Color.White
         Me.BtnEmoji.LinkColor = System.Drawing.Color.White
-        Me.BtnEmoji.Location = New System.Drawing.Point(332, 0)
+        Me.BtnEmoji.Location = New System.Drawing.Point(332, -1)
         Me.BtnEmoji.Name = "BtnEmoji"
         Me.BtnEmoji.Size = New System.Drawing.Size(21, 24)
         Me.BtnEmoji.TabIndex = 96
@@ -926,7 +931,7 @@ Partial Class FrmMain
         Me.BtnBold.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnBold.Font = New System.Drawing.Font("Arial Black", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnBold.ForeColor = System.Drawing.Color.White
-        Me.BtnBold.Location = New System.Drawing.Point(355, 0)
+        Me.BtnBold.Location = New System.Drawing.Point(355, -1)
         Me.BtnBold.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.BtnBold.Name = "BtnBold"
         Me.BtnBold.Size = New System.Drawing.Size(20, 24)
@@ -1292,7 +1297,7 @@ Partial Class FrmMain
         Me.Panel5.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Padding = New System.Windows.Forms.Padding(1)
-        Me.Panel5.Size = New System.Drawing.Size(452, 261)
+        Me.Panel5.Size = New System.Drawing.Size(452, 237)
         Me.Panel5.TabIndex = 85
         '
         'TabMessages
@@ -1304,7 +1309,7 @@ Partial Class FrmMain
         Me.TabMessages.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.TabMessages.Name = "TabMessages"
         Me.TabMessages.SelectedIndex = 0
-        Me.TabMessages.Size = New System.Drawing.Size(450, 234)
+        Me.TabMessages.Size = New System.Drawing.Size(450, 207)
         Me.TabMessages.TabIndex = 41
         '
         'TabPage1
@@ -1313,7 +1318,7 @@ Partial Class FrmMain
         Me.TabPage1.Location = New System.Drawing.Point(4, 24)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(4)
-        Me.TabPage1.Size = New System.Drawing.Size(442, 206)
+        Me.TabPage1.Size = New System.Drawing.Size(442, 179)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Message 1"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -1327,10 +1332,10 @@ Partial Class FrmMain
         Me.Panel13.Controls.Add(Me.BtnItalic)
         Me.Panel13.Controls.Add(Me.BtnBold)
         Me.Panel13.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel13.Location = New System.Drawing.Point(1, 235)
+        Me.Panel13.Location = New System.Drawing.Point(1, 208)
         Me.Panel13.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Panel13.Name = "Panel13"
-        Me.Panel13.Size = New System.Drawing.Size(450, 25)
+        Me.Panel13.Size = New System.Drawing.Size(450, 28)
         Me.Panel13.TabIndex = 42
         '
         'Button19
@@ -1340,7 +1345,7 @@ Partial Class FrmMain
         Me.Button19.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.Button19.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Button19.ForeColor = System.Drawing.Color.White
-        Me.Button19.Location = New System.Drawing.Point(1, 2)
+        Me.Button19.Location = New System.Drawing.Point(4, 3)
         Me.Button19.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Button19.Name = "Button19"
         Me.Button19.Size = New System.Drawing.Size(87, 22)
@@ -1353,36 +1358,36 @@ Partial Class FrmMain
         Me.ContextMenuStripParams.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ContextMenuStripParams.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.InsertFullNameToolStripMenuItem, Me.InsertFirstNameToolStripMenuItem, Me.InsertLastNameToolStripMenuItem, Me.ToolStripMenuItem17, Me.InsertVarToolStripMenuItem, Me.ToolStripMenuItem18, Me.InsertRandomTagToolStripMenuItem, Me.InsertSpintaxToolStripMenuItem})
         Me.ContextMenuStripParams.Name = "ContextMenuStripParams"
-        Me.ContextMenuStripParams.Size = New System.Drawing.Size(173, 148)
+        Me.ContextMenuStripParams.Size = New System.Drawing.Size(174, 148)
         '
         'InsertFullNameToolStripMenuItem
         '
         Me.InsertFullNameToolStripMenuItem.Name = "InsertFullNameToolStripMenuItem"
-        Me.InsertFullNameToolStripMenuItem.Size = New System.Drawing.Size(172, 22)
+        Me.InsertFullNameToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
         Me.InsertFullNameToolStripMenuItem.Text = "Insert Full Name"
         '
         'InsertFirstNameToolStripMenuItem
         '
         Me.InsertFirstNameToolStripMenuItem.Name = "InsertFirstNameToolStripMenuItem"
-        Me.InsertFirstNameToolStripMenuItem.Size = New System.Drawing.Size(172, 22)
+        Me.InsertFirstNameToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
         Me.InsertFirstNameToolStripMenuItem.Text = "Insert First Name"
         '
         'InsertLastNameToolStripMenuItem
         '
         Me.InsertLastNameToolStripMenuItem.Name = "InsertLastNameToolStripMenuItem"
-        Me.InsertLastNameToolStripMenuItem.Size = New System.Drawing.Size(172, 22)
+        Me.InsertLastNameToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
         Me.InsertLastNameToolStripMenuItem.Text = "Insert Last Name"
         '
         'ToolStripMenuItem17
         '
         Me.ToolStripMenuItem17.Name = "ToolStripMenuItem17"
-        Me.ToolStripMenuItem17.Size = New System.Drawing.Size(169, 6)
+        Me.ToolStripMenuItem17.Size = New System.Drawing.Size(170, 6)
         '
         'InsertVarToolStripMenuItem
         '
         Me.InsertVarToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.Variable1ToolStripMenuItem, Me.Variable2ToolStripMenuItem1, Me.Variable3ToolStripMenuItem1, Me.Variable4ToolStripMenuItem1, Me.Variable5ToolStripMenuItem1})
         Me.InsertVarToolStripMenuItem.Name = "InsertVarToolStripMenuItem"
-        Me.InsertVarToolStripMenuItem.Size = New System.Drawing.Size(172, 22)
+        Me.InsertVarToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
         Me.InsertVarToolStripMenuItem.Text = "Insert Variable"
         '
         'Variable1ToolStripMenuItem
@@ -1418,19 +1423,34 @@ Partial Class FrmMain
         'ToolStripMenuItem18
         '
         Me.ToolStripMenuItem18.Name = "ToolStripMenuItem18"
-        Me.ToolStripMenuItem18.Size = New System.Drawing.Size(169, 6)
+        Me.ToolStripMenuItem18.Size = New System.Drawing.Size(170, 6)
         '
         'InsertRandomTagToolStripMenuItem
         '
         Me.InsertRandomTagToolStripMenuItem.Name = "InsertRandomTagToolStripMenuItem"
-        Me.InsertRandomTagToolStripMenuItem.Size = New System.Drawing.Size(172, 22)
+        Me.InsertRandomTagToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
         Me.InsertRandomTagToolStripMenuItem.Text = "Insert Random Tag"
         '
         'InsertSpintaxToolStripMenuItem
         '
         Me.InsertSpintaxToolStripMenuItem.Name = "InsertSpintaxToolStripMenuItem"
-        Me.InsertSpintaxToolStripMenuItem.Size = New System.Drawing.Size(172, 22)
+        Me.InsertSpintaxToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
         Me.InsertSpintaxToolStripMenuItem.Text = "Insert Spintax"
+        '
+        'configButton
+        '
+        Me.configButton.ContextMenuStrip = Me.ContextMenuStripParams
+        Me.configButton.FlatAppearance.BorderSize = 0
+        Me.configButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.configButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.configButton.ForeColor = System.Drawing.Color.White
+        Me.configButton.Location = New System.Drawing.Point(233, 3)
+        Me.configButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.configButton.Name = "configButton"
+        Me.configButton.Size = New System.Drawing.Size(87, 22)
+        Me.configButton.TabIndex = 101
+        Me.configButton.Text = "Config Buttons"
+        Me.configButton.UseVisualStyleBackColor = True
         '
         'Panel6
         '
@@ -1730,6 +1750,7 @@ Partial Class FrmMain
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(237, Byte), Integer), CType(CType(237, Byte), Integer), CType(CType(237, Byte), Integer))
+        Me.Panel2.Controls.Add(Me.Panel14)
         Me.Panel2.Controls.Add(Me.PictureBox4)
         Me.Panel2.Controls.Add(Me.LinkLabel2)
         Me.Panel2.Controls.Add(Me.CefBrowser)
@@ -1754,6 +1775,44 @@ Partial Class FrmMain
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(1089, 593)
         Me.Panel2.TabIndex = 107
+        '
+        'Panel14
+        '
+        Me.Panel14.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.Panel14.AutoSize = True
+        Me.Panel14.BackColor = System.Drawing.Color.FromArgb(CType(CType(16, Byte), Integer), CType(CType(69, Byte), Integer), CType(CType(77, Byte), Integer))
+        Me.Panel14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.Panel14.Controls.Add(Me.includeListButton)
+        Me.Panel14.Controls.Add(Me.includeButtons)
+        Me.Panel14.Controls.Add(Me.configButton)
+        Me.Panel14.Location = New System.Drawing.Point(634, 375)
+        Me.Panel14.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.Panel14.Name = "Panel14"
+        Me.Panel14.Size = New System.Drawing.Size(453, 31)
+        Me.Panel14.TabIndex = 121
+        Me.Panel14.Visible = False
+        '
+        'includeListButton
+        '
+        Me.includeListButton.AutoSize = True
+        Me.includeListButton.ForeColor = System.Drawing.Color.White
+        Me.includeListButton.Location = New System.Drawing.Point(113, 7)
+        Me.includeListButton.Name = "includeListButton"
+        Me.includeListButton.Size = New System.Drawing.Size(114, 17)
+        Me.includeListButton.TabIndex = 103
+        Me.includeListButton.Text = "Include List Button"
+        Me.includeListButton.UseVisualStyleBackColor = True
+        '
+        'includeButtons
+        '
+        Me.includeButtons.AutoSize = True
+        Me.includeButtons.ForeColor = System.Drawing.Color.White
+        Me.includeButtons.Location = New System.Drawing.Point(7, 7)
+        Me.includeButtons.Name = "includeButtons"
+        Me.includeButtons.Size = New System.Drawing.Size(100, 17)
+        Me.includeButtons.TabIndex = 102
+        Me.includeButtons.Text = "Include Buttons"
+        Me.includeButtons.UseVisualStyleBackColor = True
         '
         'PictureBox4
         '
@@ -2186,23 +2245,23 @@ Partial Class FrmMain
         Me.ExportReceivedContextMenuStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ExportReceivedContextMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportReceivedMessageToolStripMenuItem, Me.ToolStripMenuItem21, Me.ClearListToolStripMenuItem1})
         Me.ExportReceivedContextMenuStrip.Name = "ExportReceivedContextMenuStrip"
-        Me.ExportReceivedContextMenuStrip.Size = New System.Drawing.Size(208, 54)
+        Me.ExportReceivedContextMenuStrip.Size = New System.Drawing.Size(207, 54)
         '
         'ExportReceivedMessageToolStripMenuItem
         '
         Me.ExportReceivedMessageToolStripMenuItem.Name = "ExportReceivedMessageToolStripMenuItem"
-        Me.ExportReceivedMessageToolStripMenuItem.Size = New System.Drawing.Size(207, 22)
+        Me.ExportReceivedMessageToolStripMenuItem.Size = New System.Drawing.Size(206, 22)
         Me.ExportReceivedMessageToolStripMenuItem.Text = "Export Received Message"
         '
         'ToolStripMenuItem21
         '
         Me.ToolStripMenuItem21.Name = "ToolStripMenuItem21"
-        Me.ToolStripMenuItem21.Size = New System.Drawing.Size(204, 6)
+        Me.ToolStripMenuItem21.Size = New System.Drawing.Size(203, 6)
         '
         'ClearListToolStripMenuItem1
         '
         Me.ClearListToolStripMenuItem1.Name = "ClearListToolStripMenuItem1"
-        Me.ClearListToolStripMenuItem1.Size = New System.Drawing.Size(207, 22)
+        Me.ClearListToolStripMenuItem1.Size = New System.Drawing.Size(206, 22)
         Me.ClearListToolStripMenuItem1.Text = "Clear List"
         '
         'LicenseTimer
@@ -2215,23 +2274,23 @@ Partial Class FrmMain
         Me.ContextMenuReceivedMsg.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ContextMenuReceivedMsg.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportMessagesToolStripMenuItem, Me.ToolStripMenuItem29, Me.ClearMessageToolStripMenuItem1})
         Me.ContextMenuReceivedMsg.Name = "ContextMenuReceivedMsg"
-        Me.ContextMenuReceivedMsg.Size = New System.Drawing.Size(163, 54)
+        Me.ContextMenuReceivedMsg.Size = New System.Drawing.Size(162, 54)
         '
         'ExportMessagesToolStripMenuItem
         '
         Me.ExportMessagesToolStripMenuItem.Name = "ExportMessagesToolStripMenuItem"
-        Me.ExportMessagesToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ExportMessagesToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
         Me.ExportMessagesToolStripMenuItem.Text = "Export Messages"
         '
         'ToolStripMenuItem29
         '
         Me.ToolStripMenuItem29.Name = "ToolStripMenuItem29"
-        Me.ToolStripMenuItem29.Size = New System.Drawing.Size(159, 6)
+        Me.ToolStripMenuItem29.Size = New System.Drawing.Size(158, 6)
         '
         'ClearMessageToolStripMenuItem1
         '
         Me.ClearMessageToolStripMenuItem1.Name = "ClearMessageToolStripMenuItem1"
-        Me.ClearMessageToolStripMenuItem1.Size = New System.Drawing.Size(162, 22)
+        Me.ClearMessageToolStripMenuItem1.Size = New System.Drawing.Size(161, 22)
         Me.ClearMessageToolStripMenuItem1.Text = "Clear Message"
         '
         'LinkLabel4
@@ -2297,6 +2356,8 @@ Partial Class FrmMain
         Me.Panel1.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
+        Me.Panel14.ResumeLayout(False)
+        Me.Panel14.PerformLayout()
         CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel15.ResumeLayout(False)
         Me.Panel16.ResumeLayout(False)
@@ -2536,4 +2597,8 @@ Partial Class FrmMain
     Friend WithEvents Button2 As Button
     Friend WithEvents PictureBox4 As PictureBox
     Friend WithEvents LinkLabel4 As LinkLabel
+    Friend WithEvents configButton As Button
+    Friend WithEvents Panel14 As Panel
+    Friend WithEvents includeButtons As CheckBox
+    Friend WithEvents includeListButton As CheckBox
 End Class

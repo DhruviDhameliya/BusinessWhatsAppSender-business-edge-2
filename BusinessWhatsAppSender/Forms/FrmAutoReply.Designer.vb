@@ -52,6 +52,10 @@ Partial Class FrmAutoReply
         Me.DocumentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem20 = New System.Windows.Forms.ToolStripSeparator()
         Me.StickersToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ButtonInclude = New System.Windows.Forms.CheckBox()
+        Me.ButtonConfig = New System.Windows.Forms.Button()
+        Me.ButtonMessage = New System.Windows.Forms.Label()
+        Me.IncludeListButton = New System.Windows.Forms.CheckBox()
         Me.ContextMenuMediaType.SuspendLayout()
         Me.ContextMenuStripAttachFiles.SuspendLayout()
         Me.SuspendLayout()
@@ -74,7 +78,7 @@ Partial Class FrmAutoReply
         '
         Me.BtnStrike.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(9, Byte), Integer), CType(CType(144, Byte), Integer), CType(CType(122, Byte), Integer))
         Me.BtnStrike.FlatAppearance.BorderSize = 0
-        Me.BtnStrike.Font = New System.Drawing.Font("Arial Narrow", 11.25!, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnStrike.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnStrike.ForeColor = System.Drawing.Color.Black
         Me.BtnStrike.Location = New System.Drawing.Point(430, 121)
         Me.BtnStrike.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
@@ -114,7 +118,7 @@ Partial Class FrmAutoReply
         '
         'GroupBoxDivider
         '
-        Me.GroupBoxDivider.Location = New System.Drawing.Point(-15, 318)
+        Me.GroupBoxDivider.Location = New System.Drawing.Point(-18, 366)
         Me.GroupBoxDivider.Name = "GroupBoxDivider"
         Me.GroupBoxDivider.Size = New System.Drawing.Size(521, 7)
         Me.GroupBoxDivider.TabIndex = 123
@@ -167,7 +171,7 @@ Partial Class FrmAutoReply
         '
         'ButtonCancel
         '
-        Me.ButtonCancel.Location = New System.Drawing.Point(306, 330)
+        Me.ButtonCancel.Location = New System.Drawing.Point(303, 378)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 114
@@ -176,7 +180,7 @@ Partial Class FrmAutoReply
         '
         'ButtonOK
         '
-        Me.ButtonOK.Location = New System.Drawing.Point(387, 330)
+        Me.ButtonOK.Location = New System.Drawing.Point(384, 378)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
         Me.ButtonOK.TabIndex = 113
@@ -258,44 +262,90 @@ Partial Class FrmAutoReply
         '
         Me.ContextMenuStripAttachFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PhotosToolStripMenuItem, Me.VideosToolStripMenuItem, Me.DocumentsToolStripMenuItem, Me.ToolStripMenuItem20, Me.StickersToolStripMenuItem})
         Me.ContextMenuStripAttachFiles.Name = "ContextMenuStripAttachFiles"
-        Me.ContextMenuStripAttachFiles.Size = New System.Drawing.Size(181, 120)
+        Me.ContextMenuStripAttachFiles.Size = New System.Drawing.Size(165, 98)
         '
         'PhotosToolStripMenuItem
         '
         Me.PhotosToolStripMenuItem.Name = "PhotosToolStripMenuItem"
-        Me.PhotosToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.PhotosToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.PhotosToolStripMenuItem.Text = "Photos"
         '
         'VideosToolStripMenuItem
         '
         Me.VideosToolStripMenuItem.Name = "VideosToolStripMenuItem"
-        Me.VideosToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.VideosToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.VideosToolStripMenuItem.Text = "Videos"
         Me.VideosToolStripMenuItem.Visible = False
         '
         'DocumentsToolStripMenuItem
         '
         Me.DocumentsToolStripMenuItem.Name = "DocumentsToolStripMenuItem"
-        Me.DocumentsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DocumentsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.DocumentsToolStripMenuItem.Text = "Documents"
         '
         'ToolStripMenuItem20
         '
         Me.ToolStripMenuItem20.Name = "ToolStripMenuItem20"
-        Me.ToolStripMenuItem20.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripMenuItem20.Size = New System.Drawing.Size(161, 6)
         '
         'StickersToolStripMenuItem
         '
         Me.StickersToolStripMenuItem.Name = "StickersToolStripMenuItem"
-        Me.StickersToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.StickersToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.StickersToolStripMenuItem.Text = "Image as Stickers"
         Me.StickersToolStripMenuItem.Visible = False
+        '
+        'ButtonInclude
+        '
+        Me.ButtonInclude.AutoSize = True
+        Me.ButtonInclude.Location = New System.Drawing.Point(9, 343)
+        Me.ButtonInclude.Name = "ButtonInclude"
+        Me.ButtonInclude.Size = New System.Drawing.Size(100, 17)
+        Me.ButtonInclude.TabIndex = 131
+        Me.ButtonInclude.Text = "Include Buttons"
+        Me.ButtonInclude.UseVisualStyleBackColor = True
+        Me.ButtonInclude.Visible = False
+        '
+        'ButtonConfig
+        '
+        Me.ButtonConfig.Location = New System.Drawing.Point(235, 337)
+        Me.ButtonConfig.Name = "ButtonConfig"
+        Me.ButtonConfig.Size = New System.Drawing.Size(93, 26)
+        Me.ButtonConfig.TabIndex = 130
+        Me.ButtonConfig.Text = "Config Buttons"
+        Me.ButtonConfig.UseVisualStyleBackColor = True
+        Me.ButtonConfig.Visible = False
+        '
+        'ButtonMessage
+        '
+        Me.ButtonMessage.AutoSize = True
+        Me.ButtonMessage.Location = New System.Drawing.Point(9, 319)
+        Me.ButtonMessage.Name = "ButtonMessage"
+        Me.ButtonMessage.Size = New System.Drawing.Size(84, 13)
+        Me.ButtonMessage.TabIndex = 129
+        Me.ButtonMessage.Text = "Button Message"
+        Me.ButtonMessage.Visible = False
+        '
+        'IncludeListButton
+        '
+        Me.IncludeListButton.AutoSize = True
+        Me.IncludeListButton.Location = New System.Drawing.Point(115, 343)
+        Me.IncludeListButton.Name = "IncludeListButton"
+        Me.IncludeListButton.Size = New System.Drawing.Size(114, 17)
+        Me.IncludeListButton.TabIndex = 132
+        Me.IncludeListButton.Text = "Include List Button"
+        Me.IncludeListButton.UseVisualStyleBackColor = True
+        Me.IncludeListButton.Visible = False
         '
         'FrmAutoReply
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(468, 360)
+        Me.ClientSize = New System.Drawing.Size(468, 415)
+        Me.Controls.Add(Me.IncludeListButton)
+        Me.Controls.Add(Me.ButtonInclude)
+        Me.Controls.Add(Me.ButtonConfig)
+        Me.Controls.Add(Me.ButtonMessage)
         Me.Controls.Add(Me.ButtonEmoji)
         Me.Controls.Add(Me.BtnStrike)
         Me.Controls.Add(Me.BtnItalic)
@@ -351,4 +401,8 @@ Partial Class FrmAutoReply
     Friend WithEvents DeleteToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem6 As ToolStripSeparator
     Friend WithEvents OpenFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ButtonInclude As CheckBox
+    Friend WithEvents ButtonConfig As Button
+    Friend WithEvents ButtonMessage As Label
+    Friend WithEvents IncludeListButton As CheckBox
 End Class

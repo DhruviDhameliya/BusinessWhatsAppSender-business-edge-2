@@ -193,6 +193,7 @@
     <Compile Include="Classes\ClsAttachment.vb" />
     <Compile Include="Classes\ClsAutoReplyMessage.vb" />
     <Compile Include="Classes\ClsBase64.vb" />
+    <Compile Include="Classes\ClsButtonConfig.vb" />
     <Compile Include="Classes\ClsChannelModel.vb" />
     <Compile Include="Classes\ClsFileImports.vb" />
     <Compile Include="Classes\ClsLangModel.vb" />
@@ -248,10 +249,22 @@
     <Compile Include="Forms\FrmAutoReply.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\FrmAutoReplyButtonConfig.Designer.vb">
+      <DependentUpon>FrmAutoReplyButtonConfig.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmAutoReplyButtonConfig.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\FrmBrowser.Designer.vb">
       <DependentUpon>FrmBrowser.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmBrowser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmButtonConfig.Designer.vb">
+      <DependentUpon>FrmButtonConfig.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmButtonConfig.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FrmFilter.Designer.vb">
@@ -438,7 +451,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\FrmAbout.resx">
       <DependentUpon>FrmAbout.vb</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmAdd.resx">
       <DependentUpon>FrmAdd.vb</DependentUpon>
@@ -455,8 +467,14 @@
     <EmbeddedResource Include="Forms\FrmAutoReply.resx">
       <DependentUpon>FrmAutoReply.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmAutoReplyButtonConfig.resx">
+      <DependentUpon>FrmAutoReplyButtonConfig.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmBrowser.resx">
       <DependentUpon>FrmBrowser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmButtonConfig.resx">
+      <DependentUpon>FrmButtonConfig.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmFilter.resx">
       <DependentUpon>FrmFilter.vb</DependentUpon>

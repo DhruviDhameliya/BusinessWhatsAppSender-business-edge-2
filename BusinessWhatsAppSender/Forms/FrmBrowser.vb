@@ -2,6 +2,9 @@
 Imports System.Threading
 Imports Microsoft.Web.WebView2.Core
 Imports Newtonsoft.Json
+Imports WhatsAppBusinessMarketingSoftware.FrmButtonConfig
+Imports System.IO
+Imports WhatsAppBusinessMarketingSoftware.ClsButtonConfig
 
 Public Class FrmBrowser
     Public loginResult As String
@@ -72,6 +75,14 @@ Public Class FrmBrowser
                 MessagesSentList.Add(SentMessage)
                 BulkIsMessageSent = True
                 If SendingResult Then
+                    If FrmMain._includeButton Then
+                        Dim ButtonConfigData As ButtonConfigData = Await GetButtonConfigData()
+                        Await SendButtonMessage(Destination.WhatsAppID, ButtonConfigData)
+                    End If
+                    If FrmMain._includeListButtons Then
+                        Dim ButtonListData As LabelRootObject = Await GetButtonListData()
+                        Await SendListButtonMessage(Destination.WhatsAppID, ButtonListData)
+                    End If
                     If Not IsNothing(_Attachments) Then
                         For Each Attachment As AttachmentModel In _Attachments
                             Dim AttachmentCaption As String = Attachment.Caption
@@ -85,11 +96,11 @@ Public Class FrmBrowser
                     End If
                 End If
                 Do
-                    Thread.Sleep(10)
+                    Await Task.Delay(100)
                 Loop While BulkIsPaused
-                Thread.Sleep(GetDelay)
+                Await Task.Delay(GetDelay)
                 Dim waitspeed = (5 - Val(GetSetting(ApplicationTitle, "SendingConfig", "Speed", "3"))) * 100
-                Thread.Sleep(waitspeed)
+                Await Task.Delay(waitspeed)
                 If CBool(GetSetting(ApplicationTitle, "SendingConfig", "ActivateSleep", "false")) Then
                     If SendingCounter Mod Val(GetSetting(ApplicationTitle, "SendingConfig", "SleepAfter", 20)) = 0 Then
                         BulkIsResting = True
@@ -100,20 +111,25 @@ Public Class FrmBrowser
                 If CBool(GetSetting(ApplicationTitle, "SendingConfig", "ActivateDialog", "false")) Then
                     If SendingCounter Mod (Val(GetSetting(ApplicationTitle, "SendingConfig", "DialogAfter", 5)) + 1) = 0 Then
                         Dim FamiliarLimits As Integer = 0
-                        Dim FamiliarDestination As String() = IO.File.ReadAllLines(ClsSpecialDirectories.Getdata & "commonList.data")
-                        If FamiliarDestination.Count > Val(GetSetting(ApplicationTitle, "SendingConfig", "DialoCount", 15)) Then
-                            FamiliarLimits = Val(GetSetting(ApplicationTitle, "SendingConfig", "DialoCount", 15))
-                        Else
-                            FamiliarLimits = FamiliarDestination.Count
-                        End If
+                        Try
+                            Dim FamiliarDestination As String() = IO.File.ReadAllLines(ClsSpecialDirectories.Getdata & "commonList.data")
+                            If FamiliarDestination.Count > Val(GetSetting(ApplicationTitle, "SendingConfig", "DialoCount", 15)) Then
+                                FamiliarLimits = Val(GetSetting(ApplicationTitle, "SendingConfig", "DialoCount", 15))
+                            Else
+                                FamiliarLimits = FamiliarDestination.Count
+                            End If
 
-                        Dim FamiliarMessages() As String = IO.File.ReadAllLines(ClsSpecialDirectories.Getdata & "commonMessage.data")
+                            Dim FamiliarMessages() As String = IO.File.ReadAllLines(ClsSpecialDirectories.Getdata & "commonMessage.data")
 
-                        For i = 0 To FamiliarLimits - 1
-                            Randomize()
-                            Await SendMessage(FamiliarDestination(i) & "@c.us", FamiliarMessages(Int(Rnd() * FamiliarMessages.Count)), True)
-                            Thread.Sleep(Val(GetSetting(ApplicationTitle, "SendingConfig", "DialogWait", 1)) * 1000)
-                        Next
+                            For i = 0 To FamiliarLimits - 1
+                                Randomize()
+                                Await SendMessage(FamiliarDestination(i) & "@c.us", FamiliarMessages(Int(Rnd() * FamiliarMessages.Count)), True)
+                                Thread.Sleep(Val(GetSetting(ApplicationTitle, "SendingConfig", "DialogWait", 1)) * 1000)
+                            Next
+                        Catch ex As Exception
+                            Console.WriteLine("Error reading familiar destination list: " & ex.Message)
+                            ' Decide what to do next
+                        End Try
                     End If
                 End If
                 Application.DoEvents()
@@ -203,6 +219,8 @@ Public Class FrmBrowser
 
         Try
             WebView2.InitializeLifetimeService()
+            Me.WindowState = FormWindowState.Maximized
+            WebView2.Dock = DockStyle.Fill
         Catch ex As Exception
             If MsgBox($"You have to install Edge Runtime to start the application.{vbCrLf} Do you want install it?",
                       vbCritical + vbYesNo, Application.ProductName) = vbYes Then
@@ -348,6 +366,126 @@ Public Class FrmBrowser
         NumberCheckedList = e & "|" & NumberCheckedList
     End Sub
 
+    Public Class objectData
+        Public Property title As String
+        Public Property footer As String
+        Public Property body As String
+        Public Property isReply As Boolean
+        Public Property buttons As List(Of Dictionary(Of String, Object)) = New List(Of Dictionary(Of String, Object))() ' Ensure buttons is initialized
+    End Class
+    Public Async Function CreateButtonObject(ByVal data As Object) As Task(Of Object)
+        Try
+            Dim outputData As New objectData With {
+            .title = data.title,
+            .footer = data.footer,
+            .body = data.body,
+            .isReply = data.isReply
+        }
+            ' Ensure data.buttons is not Nothing
+            If data.buttons IsNot Nothing Then
+                For Each button As ButtonData In data.buttons
+                    If button IsNot Nothing Then
+                        Dim transformedButton As New Dictionary(Of String, Object)()
+                        If button.ButtonType IsNot Nothing Then
+                            Select Case button.ButtonType.ToString()
+                                Case "Phone Number"
+                                    If Not String.IsNullOrEmpty(button.Value?.ToString()) Then
+                                        transformedButton("phoneNumber") = button.Value
+                                    End If
+                                Case "URL"
+                                    If Not String.IsNullOrEmpty(button.Value?.ToString()) Then
+                                        transformedButton("url") = button.Value
+                                    End If
+                                Case "Reply"
+                                    If Not String.IsNullOrEmpty(button.Value?.ToString()) Then
+                                        transformedButton("id") = button.Value
+                                    End If
+                                Case "Code"
+                                    If Not String.IsNullOrEmpty(button.Value?.ToString()) Then
+                                        transformedButton("code") = button.Value
+                                    End If
+                            End Select
+                        Else
+                            Console.WriteLine("button.ButtonType is Nothing")
+                        End If
+
+                        transformedButton("text") = button.Text
+                        If transformedButton.ContainsKey("phoneNumber") OrElse transformedButton.ContainsKey("url") OrElse transformedButton.ContainsKey("id") OrElse transformedButton.ContainsKey("code") Then
+                            outputData.buttons.Add(transformedButton)
+                        End If
+                    Else
+                        Console.WriteLine("button is Nothing")
+                    End If
+                Next
+            Else
+                Console.WriteLine("data.buttons is Nothing")
+            End If
+            Dim outputJson As String = JsonConvert.SerializeObject(outputData, Formatting.Indented)
+            Console.WriteLine("outputJson")
+            Console.WriteLine(outputJson)
+            Return outputJson
+
+        Catch ex As Exception
+            Console.WriteLine("errrrrrrrrrrr")
+            Console.WriteLine(ex)
+            Return False
+        End Try
+    End Function
+
+    Public Async Function GetButtonConfigData() As Task(Of ButtonConfigData)
+        Try
+            Dim json As String = File.ReadAllText(ClsSpecialDirectories.ButtonsFolder & "buttonData.json")
+            Dim data As ButtonConfigData = JsonConvert.DeserializeObject(Of ButtonConfigData)(json)
+            Thread.Sleep(100)
+            Return data
+        Catch ex As Exception
+            Console.WriteLine(ex)
+        End Try
+    End Function
+
+    Public Async Function SendButtonMessage(ByVal WhatsAppAccount As String, ByVal ButtonConfigData As ButtonConfigData) As Task(Of String)
+        Try
+            Dim status = """null"""
+            Dim FinalData As Object = Await CreateButtonObject(ButtonConfigData)
+            Try
+                Await WebView2.ExecuteScriptAsync($"tlsbot.sendTextMessageWithButtons('{WhatsAppAccount}','{SafeJavaScript(ButtonConfigData.body)}',{FinalData})")
+            Catch ex As Exception
+                Console.WriteLine(ex)
+            End Try
+            Thread.Sleep(100)
+        Catch ex As Exception
+            Console.WriteLine(ex)
+        End Try
+    End Function
+
+    Public Async Function GetButtonListData() As Task(Of LabelRootObject)
+        Try
+            Dim json As String = File.ReadAllText(ClsSpecialDirectories.ButtonsFolder & "buttonListData.json")
+            Dim data As LabelRootObject = JsonConvert.DeserializeObject(Of LabelRootObject)(json)
+            Thread.Sleep(100)
+            Return data
+        Catch ex As Exception
+            Console.WriteLine(ex)
+        End Try
+    End Function
+    Public Async Function SendListButtonMessage(ByVal WhatsAppAccount As String, ByVal ButtonListData As LabelRootObject) As Task(Of String)
+        Try
+            Dim status = """null"""
+            Try
+                Dim outputJson As String = JsonConvert.SerializeObject(ButtonListData, Formatting.Indented)
+                Try
+                    Await WebView2.ExecuteScriptAsync($"tlsbot.sendListMessage('{WhatsAppAccount}','{SafeJavaScript(ButtonListData.description)}',{outputJson})")
+                Catch ex As Exception
+                    Console.WriteLine("Catch")
+                End Try
+                Thread.Sleep(100)
+            Catch ex As Exception
+                Console.WriteLine(ex)
+            End Try
+        Catch ex As Exception
+            Console.WriteLine(ex)
+        End Try
+    End Function
     Public Async Function SendMessage(ByVal WhatsAppAccount As String, ByVal Message As String, ByVal IsSafe As Boolean) As Task(Of String)
         Try
             Dim status = """null"""
@@ -467,6 +605,33 @@ Public Class FrmBrowser
             Return JsonConvert.DeserializeObject("{}")
         End Try
     End Function
+
+    Public Async Sub SendAutoReply(ByVal WhatsAppAccount As String, ByVal rule As ClsRuleModel)
+        Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
+        Application.DoEvents()
+        If Not IsNothing(rule.Attachment) Then
+            For Each attach As ClsAttachment In rule.Attachment
+                Application.DoEvents()
+                If attach.MediaType <> "Sticker" Then
+                    SendFile(attach.File, WhatsAppAccount, attach.Caption)
+                Else
+                    SendStickers(attach.File, WhatsAppAccount)
+                End If
+            Next
+
+        End If
+        If rule.ButtonInclude Then
+            If Not IsNothing(rule.ButtonConfigData) Then
+                Await SendButtonMessage(WhatsAppAccount, rule.ButtonConfigData)
+            End If
+        End If
+        If rule.IncludeListButton Then
+            If Not IsNothing(rule.ButtonListData) Then
+                Await SendListButtonMessage(WhatsAppAccount, rule.ButtonListData)
+            End If
+        End If
+    End Sub
+
     Private Async Sub Receiver(sender As Object, e As EventArgs) Handles TimerReceive.Tick
         Try
             Application.DoEvents()
@@ -556,6 +721,16 @@ Public Class FrmBrowser
                                                                     End If
                                                                 Next
                                                             End If
+                                                            If _autoReplyObject.ButtonInclude Then
+                                                                If Not IsNothing(_autoReplyObject.ButtonConfigData) Then
+                                                                    Await SendButtonMessage(WhatsAppAccount, _autoReplyObject.ButtonConfigData)
+                                                                End If
+                                                            End If
+                                                            If _autoReplyObject.IncludeListButton Then
+                                                                If Not IsNothing(_autoReplyObject.ButtonListData) Then
+                                                                    Await SendListButtonMessage(WhatsAppAccount, _autoReplyObject.ButtonListData)
+                                                                End If
+                                                            End If
                                                         End If
                                                     End If
                                                 End If
@@ -569,82 +744,42 @@ Public Class FrmBrowser
                                                                 Select Case rule.Operand
                                                                     Case "="
                                                                         If rule.RuleKeyword = Body.Trim Then
-                                                                            Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
-                                                                            Application.DoEvents()
-                                                                            If Not IsNothing(rule.Attachment) Then
-                                                                                For Each attach As ClsAttachment In rule.Attachment
-                                                                                    Application.DoEvents()
-                                                                                    If attach.MediaType <> "Sticker" Then
-                                                                                        SendFile(attach.File, WhatsAppAccount, attach.Caption)
-                                                                                    Else
-                                                                                        SendStickers(attach.File, WhatsAppAccount)
-                                                                                    End If
-                                                                                Next
-
-                                                                            End If
+                                                                            SendAutoReply(WhatsAppAccount, rule)
+                                                                            'Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
+                                                                            'Application.DoEvents()
+                                                                            'If Not IsNothing(rule.Attachment) Then
+                                                                            '    For Each attach As ClsAttachment In rule.Attachment
+                                                                            '        Application.DoEvents()
+                                                                            '        If attach.MediaType <> "Sticker" Then
+                                                                            '            SendFile(attach.File, WhatsAppAccount, attach.Caption)
+                                                                            '        Else
+                                                                            '            SendStickers(attach.File, WhatsAppAccount)
+                                                                            '        End If
+                                                                            '    Next
+                                                                            'End If
+                                                                            'Console.WriteLine("rule.ButtonInclude" & rule.ButtonInclude)
+                                                                            'If rule.ButtonInclude Then
+                                                                            '    If Not IsNothing(rule.ButtonConfigData) Then
+                                                                            '        Console.WriteLine("iffffffffffffffff")
+                                                                            '        Await SendButtonMessage(WhatsAppAccount, rule.ButtonConfigData)
+                                                                            '    End If
+                                                                            'End If
                                                                         End If
                                                                     Case "Like"
                                                                         If rule.RuleKeyword.ToLower = Body.Trim.ToLower Then
-                                                                            Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
-                                                                            Application.DoEvents()
-                                                                            If Not IsNothing(rule.Attachment) Then
-                                                                                For Each attach As ClsAttachment In rule.Attachment
-                                                                                    Application.DoEvents()
-                                                                                    If attach.MediaType <> "Sticker" Then
-                                                                                        SendFile(attach.File, WhatsAppAccount, attach.Caption)
-                                                                                    Else
-                                                                                        SendStickers(attach.File, WhatsAppAccount)
-                                                                                    End If
-                                                                                Next
-                                                                            End If
+                                                                            SendAutoReply(WhatsAppAccount, rule)
                                                                         End If
                                                                     Case "Start with"
                                                                         If Body.ToLower.StartsWith(rule.RuleKeyword.ToLower.Trim) Then
-                                                                            Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
-                                                                            Application.DoEvents()
-                                                                            If Not IsNothing(rule.Attachment) Then
-                                                                                For Each attach As ClsAttachment In rule.Attachment
-                                                                                    Application.DoEvents()
-                                                                                    If attach.MediaType <> "Sticker" Then
-                                                                                        SendFile(attach.File, WhatsAppAccount, attach.Caption)
-                                                                                    Else
-                                                                                        SendStickers(attach.File, WhatsAppAccount)
-                                                                                    End If
-                                                                                Next
-
-                                                                            End If
+                                                                            SendAutoReply(WhatsAppAccount, rule)
                                                                         End If
                                                                     Case "End with"
                                                                         If Body.ToLower.EndsWith(rule.RuleKeyword.ToLower.Trim) Then
-                                                                            Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
-                                                                            Application.DoEvents()
-                                                                            If Not IsNothing(rule.Attachment) Then
-                                                                                For Each attach As ClsAttachment In rule.Attachment
-                                                                                    Application.DoEvents()
-                                                                                    If attach.MediaType <> "Sticker" Then
-                                                                                        SendFile(attach.File, WhatsAppAccount, attach.Caption)
-                                                                                    Else
-                                                                                        SendStickers(attach.File, WhatsAppAccount)
-                                                                                    End If
-                                                                                Next
-
-                                                                            End If
+                                                                            SendAutoReply(WhatsAppAccount, rule)
                                                                         End If
                                                                     Case "Contains"
                                                                         If Body.ToLower.Contains(rule.RuleKeyword.ToLower) Then
-                                                                            Await SendMessage(WhatsAppAccount, rule.RuleMessage, False)
-                                                                            Application.DoEvents()
-                                                                            If Not IsNothing(rule.Attachment) Then
-                                                                                For Each attach As ClsAttachment In rule.Attachment
-                                                                                    Application.DoEvents()
-                                                                                    If attach.MediaType <> "Sticker" Then
-                                                                                        SendFile(attach.File, WhatsAppAccount, attach.Caption)
-                                                                                    Else
-                                                                                        SendStickers(attach.File, WhatsAppAccount)
-                                                                                    End If
-                                                                                Next
-
-                                                                            End If
+                                                                            SendAutoReply(WhatsAppAccount, rule)
                                                                         End If
                                                                 End Select
                                                             End If

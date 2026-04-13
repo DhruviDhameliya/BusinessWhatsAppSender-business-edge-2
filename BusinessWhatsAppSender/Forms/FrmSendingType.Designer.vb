@@ -125,6 +125,7 @@ Partial Class FrmSendingType
         Me.Label4.TabIndex = 7
         Me.Label4.Text = "Block risk low"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.Label4.Visible = False
         '
         'Label6
         '
@@ -138,6 +139,7 @@ Partial Class FrmSendingType
         Me.Label6.TabIndex = 9
         Me.Label6.Text = "Block risk high"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.Label6.Visible = False
         '
         'GroupBox1
         '
